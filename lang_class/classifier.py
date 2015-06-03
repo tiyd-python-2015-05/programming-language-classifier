@@ -7,9 +7,14 @@ from scipy.sparse import csc_matrix
 import argparse
 
 
-def main(X_test, Y_test):
-    if re.search(r'.npz$', X_test):
+def main(X_test, Y_test, data=None):
+    if X_test is not None:
         X_test = load_matrix(X_test)
+    else:
+        if data is not None:
+            X_test = data
+        else:
+            raise TypeError('Bad input data')
 
     bayes = new_bayes()
     prediction = bayes.predict(X_test)
@@ -24,16 +29,19 @@ def main(X_test, Y_test):
         print('success rate: ', round(100 - result / len(Y_test), 3))
 
     else:
-        print(prediction)
-        if X_test.shape[0] == 1:
-            keys = np.load('data_keys.npy')
-            for idx in range(len(proba)):
-                print(keys[idx], proba[idx])
+        keys = np.load('data_keys.npy')
+        print(keys[prediction])
+        if data is not None:
+            for idx in range(len(proba[0])):
+                print(keys[idx], round(proba[0][idx], 3))
+
 
 def new_bayes():
-    nb = MultinomialNB()
+
     Xtr = load_matrix('matrix/Xtr.npz')
     Ytr = np.load('matrix/Ytr.npy')
+
+    nb = MultinomialNB()
     nb.fit(Xtr, Ytr)
 
     return nb
@@ -66,10 +74,9 @@ if __name__ == '__main__':
         from_text = args.from_text[0]
         with open(from_text, 'r') as fh:
             data = fh.read()
+        data = pipe.transform([data])
 
-        data = pipe.transform(data)
-
-        main(data, Ytest)
+        main(None, Ytest, data)
 
     else:
         main(args.Xtest, Ytest)

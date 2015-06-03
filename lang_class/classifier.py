@@ -21,12 +21,13 @@ def main(X_test, Y_test, data=None):
     proba = bayes.predict_proba(X_test)
 
     if Y_test:
-        Y_test = np.load(Y_test)
 
+        Y_test = np.load(Y_test)
         result = sum(1 for idx in range(len(Y_test)) if Y_test[idx] != \
                   prediction[idx])
 
-        print('success rate: ', round(100 - result / len(Y_test), 3))
+        print('success rate: ', round(100 - 100*result / len(Y_test), 3))
+        print('or: ', len(Y_test) - result,' out of ', len(Y_test))
 
     else:
         keys = np.load('data_keys.npy')
@@ -48,6 +49,8 @@ def new_bayes():
 
 
 def load_matrix(filename):
+    if isinstance(filename, list):
+        filename = filename[0]
     loader = np.load(filename)
     return csc_matrix((loader['data'], loader['indices'], loader['indptr']),
                          shape = loader['shape'])

@@ -8,14 +8,16 @@ import argparse
 import numpy as np
 
 from file_loader import load_files
+from vectorizer import CodeVectorizer
 
-
-def main(name=None, thresh=.5):
+def main(name=None, thresh=.3, vectorizer=None):
     data = load_data(name)
-    pipe = make_pipe()
+    pipe = make_pipe(vectorizer)
 
     cross_data = cross_validation.train_test_split(
-                                       data[0], data[1], test_size=.3)
+                                       data[0], data[1], test_size=thresh)
+
+
 
     pipe.fit(cross_data[0], cross_data[2])
 
@@ -45,9 +47,15 @@ def load_data(name):
 
     return data
 
-def make_pipe():
-    tf = TfidfVectorizer(sublinear_tf=True)#smooth_idf=True)
-    rf = RandomForestClassifier(n_estimators=10)#, max_features=None)
+def make_pipe(vectorizer=None):
+    if vectorizer is None:
+        tf = TfidfVectorizer(sublinear_tf=True, token_pattern= \
+                r'\b[\w\.,:\(\)\[\]\{\}\'\";%#@!*&|\<\>]+\b')#smooth_idf=True)
+    else:
+        tf = vectorizer
+
+
+    rf = RandomForestClassifier()#, max_features=None)
     return Pipeline([('tf', tf), ('rf', rf)])
 
 def save_matrix(filename, array):
@@ -61,11 +69,14 @@ if __name__ == '__main__':
                                     of programs and train a classifier on \
                                     them')
 
-    parser.add_argument('--thresh', nargs=1, default=.5, type=float)
-    parser.add_argument('--name', nargs=1, default=None, type=str)
+    parser.add_argument('--thresh', default=.5, type=float)
+    parser.add_argument('--name', default=None, type=str)
+    parser.add_argument('--cv', default=False, type=bool)
 
+    vect=None
     args = parser.parse_args()
-    if isinstance(args.thresh, list):
-        main(args.name, args.thresh[0])
-    else:
-        main(args.name, args.thresh)
+
+    if args.cv:
+            vect=CodeVectorizer()
+
+    main(args.name, args.thresh, vect)

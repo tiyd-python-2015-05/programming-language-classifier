@@ -7,7 +7,7 @@ import argparse
 from sklearn.tree import DecisionTreeClassifier
 
 
-def main(X_test, Y_test, data=None, estimator='b'):
+def main(X_test, Y_test, data=None):
     if X_test is not None:
         X_test = load_matrix(X_test)
     else:
@@ -39,10 +39,10 @@ def main(X_test, Y_test, data=None, estimator='b'):
 
 def new_classifier():
 
-    Xtr = load_matrix('matrix/Xtr.npz')
-    Ytr = np.load('matrix/Ytr.npy')
+    Xtr = load_matrix('matrix/Xtr.npz') #np.sparse.csc_matrix
+    Ytr = np.load('matrix/Ytr.npy') #np.array
 
-    nb = DecisionTreeClassifier() #MultinomialNB()
+    nb = DecisionTreeClassifier(criterion='entropy') # was MultinomialNB() before
     nb.fit(Xtr, Ytr)
 
     return nb

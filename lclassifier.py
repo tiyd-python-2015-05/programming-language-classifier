@@ -1,60 +1,4 @@
 from glob import glob
-
-l1 = glob("benchmarksgame-2014-08-31/benchmarksgame/bench/binarytrees/*")
-filelist = glob("benchmarksgame-2014-08-31/benchmarksgame/bench/*/*.*")
-
-print(str(len(l1))+" l2 "+str(len(filelist)))
-
-contents = []
-ltype = []
-for filename in filelist:
-    if "ocaml-2" not in filename:
-        i = filename.index(".")
-        ltype.append(filename[i:])
-        with open(filename) as file:
-            contents.append(file.read())
-
-testcont = []
-testlist = glob("test/*")
-for filename in testlist:
-    print(filename)
-    with open(filename) as file:
-        testcont.append(file.read())
-
-print(" ")
-print(ltype)
-print(" ")
-#print(testcont[15])
-#print(testlist)
-
-#from scikit-learn.datasets import load_iris
-from sklearn import datasets
-iris = datasets.load_iris()
-print(iris.keys())
-print(" ")
-#print(iris.data)
-print(" ")
-print(iris.target)
-
-from sklearn import neighbors, datasets
-
-iris = datasets.load_iris()
-X, y = iris.data, iris.target
-
-# create the model
-knn = neighbors.KNeighborsClassifier(n_neighbors=5)
-
-# fit the model
-knn.fit(X, y)
-
-# What kind of iris has 3cm x 5cm sepal and 4cm x 2cm petal?
-# call the "predict" method:
-result = knn.predict([[3, 5, 4, 2],])
-
-print(iris.target_names[result])
-
-
-
 import pandas as pd
 import numpy as np
 from sklearn import linear_model
@@ -63,15 +7,189 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
+import csv
 
 
+def acceptable_file(text):
+    if text in llist:
+        return True
+    else:
+        return False
 
-pipe = Pipeline([('bag_of_words', CountVectorizer()),
-                      ('tfidf', TfidfTransformer()),
-                      ('bayes', MultinomialNB())])
+def clean_ext(text):
+    if text == "gcc" or text == "h" or text == "gpp":
+        return "c"
+    elif text == "hack":
+        return "php"
+    elif text == "yarv" or text == "jruby":
+        return "ruby"
+    elif text == "clojure":
+        return "clj"
+    elif text == "python3" and text == "python":
+        return "py"
+    elif text == "perl":
+        return "pl"
+    elif text == "javascript":
+        return "js"
+    elif text == "csharp":
+        return "cs"
+    elif text == "ghc":
+        return "hs"
+    elif text == "scheme":
+        return "racket"
+    else:
+        return text
 
-pipe.fit(contents, ltype)
+llist = ["c", "cs", "sbcl", "clj", "hs", "java", "js",
+         "ocaml", "pl", "php", "py", "ruby", "scala", "racket"]
 
-print(pipe.score(contents, ltype))
+def load_file_names():
+    l = [0 for i in range(5)]
+    s = "benchmarksgame-2014-08-31/benchmarksgame/"
+    max_lvl = 5
+    for i in range(max_lvl):
+        l[i] = glob(s+"*/"*i+"*.*")
+#    l[0] = glob("benchmarksgame-2014-08-31/benchmarksgame/*/*/*/*/*.*")
+#    l2 = glob("benchmarksgame-2014-08-31/benchmarksgame/bench/*/*/*.*")
+#    filelist = l1 + l2
+    filelist = []
+    for i in range(max_lvl):
+        filelist += l[i]
+    testlist = glob("test/*")
 
-print(pipe.predict(testcont))
+    print("   total samples "+str(len(filelist)))
+    return filelist, testlist
+
+
+def load_files(filelist, testlist):
+    contents = []
+    ltype = []
+    ext_list = []
+    for filename in filelist:
+        i = filename.rfind(".")
+        ext = clean_ext(filename[i+1:])
+    #    print(ext, end=" - ")
+    #    print(ext+ str(ext in ext_list) + " - "+str(ext_list))
+        if not ext in ext_list:
+            ext_list.append(ext)
+        if acceptable_file(ext):
+            ltype.append(ext)
+            with open(filename, encoding="ISO-8859-1") as file:
+    #            print(filename)
+                contents.append(file.read())
+#    return contents, ltype
+
+    print(" number of usable files "+str(len(ltype)))
+    print(" summary of tile types")
+    for ext in ext_list:
+        print(ext.ljust(12)+ "  ", end=" ")
+        if ext in llist:
+            print(ltype.count(ext), end=" ")
+        print(" ")
+    print(" not included: ", end="")
+    for ext in llist:
+        if ext not in ext_list:
+            print(ext, end=" : ")
+    print(" ")
+
+    testcont = []
+    for filename in testlist:
+    #    print(filename)
+        with open(filename) as file:
+            testcont.append(file.read())
+
+    print(" ")
+    return contents, ltype, testcont
+    #print(testcont[15])
+    #print(testlist)
+
+def read_answers():
+    with open("test.csv") as csvfile:
+        ans_list = csv.reader(csvfile, delimiter=",")
+        ans = []
+        print(ans_list)
+        for row in ans_list:
+            ans.append(clean_ext(row[1]))
+    return ans
+
+
+def fit1(contents, ltype):
+    pipe = Pipeline([('bag_of_words', CountVectorizer()),
+                          ('tfidf', TfidfTransformer()),
+                          ('bayes', MultinomialNB())])
+    pipe.fit(contents, ltype)
+    return pipe
+#    print(pipe.score(contents, ltype))
+#    print(pipe.predict(testcont))
+#    return pipe.score(contents, ltype)
+
+
+def fit2(contents, ltype):
+    pipe = Pipeline([('bag_of_words', CountVectorizer()),
+#                          ('tfidf', TfidfTransformer()),
+                          ('bayes', MultinomialNB())])
+    pipe.fit(contents, ltype)
+    return pipe
+#    print(pipe.score(contents, ltype))
+#    print(pipe.predict(testcont))
+#    return pipe.score(contents, ltype)
+
+
+class CustomFeaturizer:
+    def __init__(self, *featurizers):
+        self.featurizers = featurizers
+
+    def fit(self, X, y=None):
+        """All scikit-lear compatible transforms and classifiers have the same interface, and
+        fit always returns the same object."""
+        return self
+
+    def transform(self, X):
+        fvs = []
+        for datum in X:
+            fvs.append([f(datum) for f in self.featurizers])
+        return fvs
+
+
+def fit3(contents, ltype):
+    pipe = Pipeline([('custom_feature', CustomFeaturizer()),
+                     ('bayes', MultinomialNB())])
+    MultinomialNB()
+    model = MultinomialNB(X, y)
+    pipe.fit(contents, ltype)
+    return pipe
+
+
+#sms_featurizer = CustomFeaturizer(longest_run_of_capital_letters_feature,
+#                                  percent_periods_feature)
+#big_list = sms_featurizer.transform(sms_data[:10])
+#print(big_list)
+
+if __name__ == "__main__":
+    filelist, testlist = load_file_names()
+    contents, ltype, testcont = load_files(filelist, testlist)
+
+    plist = [fit1, fit2]
+
+    pipel = [0 for i in range(len(plist))]
+    for i in range(len(plist)):
+        pipel[i] = plist[i](contents, ltype)
+    #pipe1 = fit1(contents, ltype)
+    #pipe2 = fit2(contents, ltype)
+
+    ans = read_answers()
+    print(ans)
+
+    i = 0
+    for pipe in pipel:
+        i += 1
+        print(" score_train "+str(i)+" "+str(pipe.score(contents, ltype)))
+        print(" pred "+str(i)+" "+str(pipe.predict(testlist)))
+        print(" score_test "+str(i)+" "+str(pipe.score(testlist, ans)))
+    #print(" score2 "+str(pipe2.score(contents, ltype)))
+
+    #print(" pred1 "+str(pipe1.predict(testlist)))
+    #print(" pred2 "+str(pipe2.predict(testlist)))
+
+    #print(" score1 "+str(pipe1.score(testlist, ans)))
+    #print(" score2 "+str(pipe2.score(testlist, ans)))

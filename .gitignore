@@ -67,3 +67,5 @@ target/
 
 .DS_store
 benchmarksgame-2014-08-31/
+
+.direnv/

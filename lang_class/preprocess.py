@@ -1,6 +1,6 @@
 from sklearn import cross_validation
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.externals import joblib
 import os
@@ -15,7 +15,7 @@ def main(name=None, thresh=.5):
     pipe = make_pipe()
 
     cross_data = cross_validation.train_test_split(
-                                       data[0], data[1], test_size=.4)
+                                       data[0], data[1], test_size=.3)
 
     pipe.fit(cross_data[0], cross_data[2])
 
@@ -32,7 +32,7 @@ def main(name=None, thresh=.5):
     np.save('matrix/Yte', cross_data[3])
 
     joblib.dump(pipe, 'dumps/pipe.pkl')
-    
+
 
 def load_data(name):
     data = load_files(name)
@@ -46,8 +46,8 @@ def load_data(name):
     return data
 
 def make_pipe():
-    tf = TfidfVectorizer()
-    rf = RandomForestClassifier()
+    tf = TfidfVectorizer(sublinear_tf=True)#smooth_idf=True)
+    rf = RandomForestClassifier(n_estimators=10)#, max_features=None)
     return Pipeline([('tf', tf), ('rf', rf)])
 
 def save_matrix(filename, array):
@@ -65,5 +65,7 @@ if __name__ == '__main__':
     parser.add_argument('--name', nargs=1, default=None, type=str)
 
     args = parser.parse_args()
-
-    main(args.name, args.thresh)
+    if isinstance(args.thresh, list):
+        main(args.name, args.thresh[0])
+    else:
+        main(args.name, args.thresh)

@@ -1,13 +1,13 @@
 from sklearn import cross_validation
-from sklearn.naive_bayes import MultinomialNB
+#from sklearn.naive_bayes import MultinomialNB
 from sklearn.externals import joblib
-import re
 import numpy as np
 from scipy.sparse import csc_matrix
 import argparse
+from sklearn.tree import DecisionTreeClassifier
 
 
-def main(X_test, Y_test, data=None):
+def main(X_test, Y_test, data=None, estimator='b'):
     if X_test is not None:
         X_test = load_matrix(X_test)
     else:
@@ -16,9 +16,9 @@ def main(X_test, Y_test, data=None):
         else:
             raise TypeError('Bad input data')
 
-    bayes = new_bayes()
-    prediction = bayes.predict(X_test)
-    proba = bayes.predict_proba(X_test)
+    classifier = new_classifier()
+    prediction = classifier.predict(X_test)
+    proba = classifier.predict_proba(X_test)
 
     if Y_test:
 
@@ -37,12 +37,12 @@ def main(X_test, Y_test, data=None):
                 print(keys[idx], round(proba[0][idx], 3))
 
 
-def new_bayes():
+def new_classifier():
 
     Xtr = load_matrix('matrix/Xtr.npz')
     Ytr = np.load('matrix/Ytr.npy')
 
-    nb = MultinomialNB()
+    nb = DecisionTreeClassifier() #MultinomialNB()
     nb.fit(Xtr, Ytr)
 
     return nb

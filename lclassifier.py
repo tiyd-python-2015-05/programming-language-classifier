@@ -5,9 +5,11 @@ from sklearn import linear_model
 from sklearn.cross_validation import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
 import csv
+import re
 
 
 def acceptable_file(text):
@@ -134,29 +136,56 @@ def fit2(contents, ltype):
 #    print(pipe.predict(testcont))
 #    return pipe.score(contents, ltype)
 
+def print_matrix(matrix, p_max=None):
+    if p_max is None:
+        upper_limit = len(matrix)
+    else:
+        upper_limit = p_max
+    for i in range(upper_limit):
+        vector = matrix[i]
+        for val in vector:
+            print(str(round(val, 3)).ljust(5)+",", end="")
+        print("")
+        #print([str(round(val, 3)) for val in vector])
+
 
 class CustomFeaturizer:
-    def __init__(self, *featurizers):
-        self.featurizers = featurizers
+    def __init__(self):
+        pass
+        #self.featurizers = featurizers
 
     def fit(self, X, y=None):
-        """All scikit-lear compatible transforms and classifiers have the same interface, and
-        fit always returns the same object."""
+        """All scikit-lear compatible transforms and classifiers have the
+        same interface, and fit always returns the same object."""
         return self
 
     def transform(self, X):
-        fvs = []
-        for datum in X:
-            fvs.append([f(datum) for f in self.featurizers])
-        return fvs
+        reg_list = ["^#", "-\>", "\{", "\$", "let", "def",
+                    "private", "static", "\<", "\[", "func\b",
+                    "this\."]
+        matrix = []
+        for text in X:
+            vector = []
+            for reg_expr in reg_list:
+                prog = re.compile(reg_expr)
+                vector.append(len(prog.findall(text))/len(text))
+            matrix.append(vector)
+        return matrix
 
 
 def fit3(contents, ltype):
-    pipe = Pipeline([('custom_feature', CustomFeaturizer()),
-                     ('bayes', MultinomialNB())])
-    MultinomialNB()
-    model = MultinomialNB(X, y)
+#    pipe = Pipeline([('custom_feature', CustomFeaturizer()),
+#                     ('bayes', MultinomialNB())])
+#    MultinomialNB()
+#    model = MultinomialNB(X, y)
+#    pipe.fit(contents, ltype)
+
+    custom_feature = CustomFeaturizer()
+#    custom_feature.fit(contents, ltype)
+
+    pipe = make_pipeline(custom_feature, DecisionTreeClassifier())
     pipe.fit(contents, ltype)
+
     return pipe
 
 
@@ -169,7 +198,7 @@ if __name__ == "__main__":
     filelist, testlist = load_file_names()
     contents, ltype, testcont = load_files(filelist, testlist)
 
-    plist = [fit1, fit2]
+    plist = [fit1, fit2, fit3]
 
     pipel = [0 for i in range(len(plist))]
     for i in range(len(plist)):
@@ -186,6 +215,15 @@ if __name__ == "__main__":
         print(" score_train "+str(i)+" "+str(pipe.score(contents, ltype)))
         print(" pred "+str(i)+" "+str(pipe.predict(testlist)))
         print(" score_test "+str(i)+" "+str(pipe.score(testlist, ans)))
+
+    word_list = re.findall(r"^#", "# include ")
+    print(word_list)
+    print(len(word_list))
+
+
+    custom_feature = CustomFeaturizer()
+    matrix = custom_feature.transform(contents)
+    print_matrix(matrix, 10)
     #print(" score2 "+str(pipe2.score(contents, ltype)))
 
     #print(" pred1 "+str(pipe1.predict(testlist)))

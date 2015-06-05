@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import RandomForestClassifier
 # other utilities
 import csv
 import re
@@ -50,8 +51,8 @@ llist = ["c", "cs", "sbcl", "clj", "hs", "java", "js",
 
 def load_file_names():
     l = [0 for i in range(5)]
-    s = "benchmarksgame-2014-08-31/benchmarksgame/"
-    max_lvl = 5
+    s = "benchmarksgame-2014-08-31/benchmarksgame/bench/"
+    max_lvl = 4
     for i in range(max_lvl):
         l[i] = glob(s+"*/"*i+"*.*")
 #    l[0] = glob("benchmarksgame-2014-08-31/benchmarksgame/*/*/*/*/*.*")
@@ -97,12 +98,14 @@ def load_files(filelist, testlist):
             print(ext, end=" : ")
     print(" ")
 
-    testcont = []
+    testcont = [0] * 32
     for filename in testlist:
     #    print(filename)
         with open(filename) as file:
-            testcont.append(file.read())
-
+            di = filename.rfind("/")
+            i = int(filename[di+1:])
+            print(filename+" "+str(i))
+            testcont[i-1] = file.read()
     print(" ")
     return contents, ltype, testcont
     #print(testcont[15])
@@ -115,6 +118,7 @@ def read_answers():
         print(ans_list)
         for row in ans_list:
             ans.append(clean_ext(row[1]))
+#            print(row[0])
     return ans
 
 
@@ -163,32 +167,52 @@ class CustomFeaturizer:
         return self
 
     def transform(self, X):
-        char_list = ["^#", "\-\>", "\{", "\$", "\<", "\[", "func\b",
-                    "this\.", "^end", ";", "\*", "%", "^do",
-                    "\<\$php", "/\*", "__", "=", "==",
-                    "===", "\(\)", "\{\}", ":", "\+\+", "\+=",
-                    "^#include", "^ \*", ":\s*$", "\<\<|\>\>",
-                    "int", "\b\*\w", "\(&\w", "argv", "\[\]"
-                    "if\s", "if\(", "^\{", "^\}", ",\s*int\s\w",
-                    "\};", "\[\d*:\d*\]", "\]\s*\{", "^//", "\w\.\{",
-                    "\(\w+:", "@", "\b@\w"]
-        word_list = ["private", "static", "make","let", "def", "^\(defn",
-                     "defn", "do", "class", "^function", "public",
-                     "unset", "printf\(", "return", "NULL", "void",
-                     "main\(", "main_", "void\s\*\w", "\{else\}",
-                     "char", "array\(", "__init__", "__str__", "token",
-                     "^import", "^from", "final", "val", "type", "package",
-                     "object", "String", "string", "primitive", "fixnum",
-                     "error", "try"]
-        reg_list = char_list + word_list
+        # char_list = ["^#", "\-\>", "\{", "\$", "\<", "\[", "func\b",
+        #             "this\.", "^end", ";", "\*", "%", "^do",
+        #             "\<\$php", "/\*", "__", "=", "==",
+        #             "===", "\(\)", "\{\}", ":", "\+\+", "\+=",
+        #             "^#include", "^ \*", ":\s*$", "\<\<|\>\>",
+        #             "int", "\b\*\w", "\(&\w", "argv", "\[\]"
+        #             "if\s", "if\(", "^\{", "^\}", ",\s*int\s\w",
+        #             "\};", "\[\d*:\d*\]", "\]\s*\{", "^//", "\w\.\{",
+        #             "\(\w+:", "@", "\b@\w"]
+        # word_list = ["private", "static", "make","let", "def", "^\(defn",
+        #              "defn", "do", "class", "^function", "public",
+        #              "unset", "printf\(", "return", "NULL", "void",
+        #              "main\(", "main_", "void\s\*\w", "\{else\}",
+        #              "char", "array\(", "__init__", "__str__", "token",
+        #              "^import", "^from", "final", "val", "type", "package",
+        #              "object", "String", "string", "primitive", "fixnum",
+        #              "error", "try"]
+        clojure = ["^\s*\(\w.*\s*$", "\(:\w+[]\s\w+]*\)"]
+        python = ["\):[ \t]*\n[ \t]*\w", "\s__\w*__\(", "(^from|^import)\s",
+                  "def\s*\w*\([ \w,]*\):[ \t]*\n(( {4})+|\t+)\w"]
+        js = ["^[ \t]var", "=\s*function",
+              "function\s*\w*\(\w*[\w\s,]*\)\s*\{"]
+        ruby = ["^[ \t]*end$", "^[ \t]*def *\w*(\(\w*\))?[ \t]*$",
+                "^[ \t]*include \w*[ \t]*$", "^[ \t]*@", "super"]
+        hs = ["&&&", "^\{-"]
+        clj = ["^\(define", "^[ \t]*;+"]
+        java = ["^[ \t]*public \w* \w*", "^[ \t]*\*", "^[ \t]*/\*\*"]
+        scl = ["^[ \t]*object \w*", "^[ \t]*(final)?val \w* ="]
+        tcl = ["^[ \t]*proc \w*::\w* \{"]
+        php = ["^[ \t]*(\w*)?( )?function \w*( )?\(&?\$\w*",
+                "^[ \t]*\$\w* ?=.*;$"]
+        ocaml = ["^[ \t]*let \w+", "^[ \t]*struct[ \t]*$"]
+        perl = ["^[ \t]*my ", "^[ \t]*sub \w* \{"]
+        gcc = ["^[ \t]*typedef \w* \w* ?\{", "^#include ?\<"]
+#        reg_list = char_list + word_list
+        reg_list = clojure + python + js + ruby + hs + clj + java + scl\
+                   + tcl + php + ocaml + perl + gcc
         matrix = []
         for text in X:
             vector = []
             for reg_expr in reg_list:
-                prog = re.compile(reg_expr)
+#                print(reg_expr)
+                prog = re.compile(reg_expr, flags=re.MULTILINE)
                 val = len(prog.findall(text))/len(text)
-                if val > 0:
-                    val = 1
+                #if val > 0:
+                #    val = 1
                 vector.append(val)
             matrix.append(vector)
         return matrix
@@ -208,6 +232,19 @@ def fit4(contents, ltype):
     return pipe
 
 
+def fit4(contents, ltype):
+    custom_feature = CustomFeaturizer()
+    pipe = make_pipeline(custom_feature, MultinomialNB())
+    pipe.fit(contents, ltype)
+    return pipe
+
+
+def fit4(contents, ltype):
+    custom_feature = CustomFeaturizer()
+    pipe = make_pipeline(custom_feature, RandomForestClassifier())
+    pipe.fit(contents, ltype)
+    return pipe
+
 #sms_featurizer = CustomFeaturizer(longest_run_of_capital_letters_feature,
 #                                  percent_periods_feature)
 #big_list = sms_featurizer.transform(sms_data[:10])
@@ -225,6 +262,9 @@ if __name__ == "__main__":
         pipel[i] = plist[i](X, y)
     #pipe1 = fit1(contents, ltype)
     #pipe2 = fit2(contents, ltype)
+    pipe = fit4(X, y)
+    #print(pipe.transform(testlist))
+    #print(testcont)
 
     ans = read_answers()
     print(ans)
@@ -234,8 +274,8 @@ if __name__ == "__main__":
         i += 1
         print(" score_train "+str(i)+" "+str(pipe.score(X, y)))
         print(" score_test  "+str(i)+" "+str(pipe.score(Xt, yt)))
-        print(" score_quest "+str(i)+" "+str(pipe.score(testlist, ans)))
-        print(" pred "+str(i)+" "+str(pipe.predict(testlist)))
+        print(" score_quest "+str(i)+" "+str(pipe.score(testcont, ans)))
+        print(" pred "+str(i)+" "+str(pipe.predict(testcont)))
         print(" ")
 
     word_list = re.findall(r"^#", "# include ")

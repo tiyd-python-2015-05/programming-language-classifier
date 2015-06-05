@@ -4,10 +4,13 @@ import numpy as np
 from sklearn import linear_model
 from sklearn.cross_validation import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
+# estimators
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import SGDClassifier
+# other utilities
 import csv
 import re
 
@@ -160,32 +163,48 @@ class CustomFeaturizer:
         return self
 
     def transform(self, X):
-        reg_list = ["^#", "-\>", "\{", "\$", "let", "def",
-                    "private", "static", "\<", "\[", "func\b",
-                    "this\."]
+        char_list = ["^#", "\-\>", "\{", "\$", "\<", "\[", "func\b",
+                    "this\.", "^end", ";", "\*", "%", "^do",
+                    "\<\$php", "/\*", "__", "=", "==",
+                    "===", "\(\)", "\{\}", ":", "\+\+", "\+=",
+                    "^#include", "^ \*", ":\s*$", "\<\<|\>\>",
+                    "int", "\b\*\w", "\(&\w", "argv", "\[\]"
+                    "if\s", "if\(", "^\{", "^\}", ",\s*int\s\w",
+                    "\};", "\[\d*:\d*\]", "\]\s*\{", "^//", "\w\.\{",
+                    "\(\w+:", "@", "\b@\w"]
+        word_list = ["private", "static", "make","let", "def", "^\(defn",
+                     "defn", "do", "class", "^function", "public",
+                     "unset", "printf\(", "return", "NULL", "void",
+                     "main\(", "main_", "void\s\*\w", "\{else\}",
+                     "char", "array\(", "__init__", "__str__", "token",
+                     "^import", "^from", "final", "val", "type", "package",
+                     "object", "String", "string", "primitive", "fixnum",
+                     "error", "try"]
+        reg_list = char_list + word_list
         matrix = []
         for text in X:
             vector = []
             for reg_expr in reg_list:
                 prog = re.compile(reg_expr)
-                vector.append(len(prog.findall(text))/len(text))
+                val = len(prog.findall(text))/len(text)
+                if val > 0:
+                    val = 1
+                vector.append(val)
             matrix.append(vector)
         return matrix
 
 
 def fit3(contents, ltype):
-#    pipe = Pipeline([('custom_feature', CustomFeaturizer()),
-#                     ('bayes', MultinomialNB())])
-#    MultinomialNB()
-#    model = MultinomialNB(X, y)
-#    pipe.fit(contents, ltype)
-
     custom_feature = CustomFeaturizer()
-#    custom_feature.fit(contents, ltype)
-
     pipe = make_pipeline(custom_feature, DecisionTreeClassifier())
     pipe.fit(contents, ltype)
+    return pipe
 
+
+def fit4(contents, ltype):
+    custom_feature = CustomFeaturizer()
+    pipe = make_pipeline(custom_feature, SGDClassifier())
+    pipe.fit(contents, ltype)
     return pipe
 
 
@@ -198,11 +217,12 @@ if __name__ == "__main__":
     filelist, testlist = load_file_names()
     contents, ltype, testcont = load_files(filelist, testlist)
 
-    plist = [fit1, fit2, fit3]
+    plist = [fit1, fit2, fit3, fit4]
 
+    X, Xt, y, yt = train_test_split(contents, ltype, test_size=0.33)
     pipel = [0 for i in range(len(plist))]
     for i in range(len(plist)):
-        pipel[i] = plist[i](contents, ltype)
+        pipel[i] = plist[i](X, y)
     #pipe1 = fit1(contents, ltype)
     #pipe2 = fit2(contents, ltype)
 
@@ -212,22 +232,12 @@ if __name__ == "__main__":
     i = 0
     for pipe in pipel:
         i += 1
-        print(" score_train "+str(i)+" "+str(pipe.score(contents, ltype)))
+        print(" score_train "+str(i)+" "+str(pipe.score(X, y)))
+        print(" score_test  "+str(i)+" "+str(pipe.score(Xt, yt)))
+        print(" score_quest "+str(i)+" "+str(pipe.score(testlist, ans)))
         print(" pred "+str(i)+" "+str(pipe.predict(testlist)))
-        print(" score_test "+str(i)+" "+str(pipe.score(testlist, ans)))
+        print(" ")
 
     word_list = re.findall(r"^#", "# include ")
     print(word_list)
     print(len(word_list))
-
-
-    custom_feature = CustomFeaturizer()
-    matrix = custom_feature.transform(contents)
-    print_matrix(matrix, 10)
-    #print(" score2 "+str(pipe2.score(contents, ltype)))
-
-    #print(" pred1 "+str(pipe1.predict(testlist)))
-    #print(" pred2 "+str(pipe2.predict(testlist)))
-
-    #print(" score1 "+str(pipe1.score(testlist, ans)))
-    #print(" score2 "+str(pipe2.score(testlist, ans)))

@@ -1,9 +1,15 @@
 from bs4 import BeautifulSoup
-import requests
 import urllib
 from re import findall
 import pandas as pd
 import random
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.cross_validation import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.cross_validation import cross_val_score
 
 # C (.gcc, .c)
 # C#
@@ -91,4 +97,34 @@ def scrape_and_clean(num_links=30):
     df = make_data(make_links_list(num_links))
     new_df = df[df[0]!='text']
     return new_df
+
+
+def scrape_clean_cut(num_links=100, min_examples=40):
+    df = make_data(make_links_list(num_links))
+    new_df = df[df[0]!='text']
+    new_df = new_df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    return new_df
+
+def pipeline_runner(dataframe, estimator):
+    ##Re-testing with MultinomialNB
+    y = dataframe.loc[:, 0]
+    X = dataframe.loc[:, 1]
+    #splitting data
+    X_train, X_test, y_train, y_test = train_test_split(X, y)
+    #running pipe to vectorize and run estimator
+    if estimator == 'Multinomial':
+        estimator_pipe = Pipeline([('bag_of_words', CountVectorizer()),
+                              ('mnb', MultinomialNB())])
+    elif estimator == 'Gaussian':
+        estimator_pipe = Pipeline([('bag_of_words', CountVectorizer()),
+                              ('gnb', GaussianNB())])
+    elif estimator == 'Bernoulli':
+        estimator_pipe = Pipeline([('bag_of_words', CountVectorizer(binary=True)),
+                              ('bnb', BernoulliNB())])
+    else:
+        return pipeline_runner(dataframe, estimator)
+    #fitting
+    estimator_pipe.fit(X_train, y_train)
+    #checking score
+    return estimator_pipe.score(X_train, y_train), estimator_pipe.score(X_test, y_test)
 

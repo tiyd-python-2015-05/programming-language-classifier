@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 from sklearn import cross_validation
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.externals import joblib
 import os
@@ -10,14 +12,13 @@ import numpy as np
 from file_loader import load_files
 from vectorizer import CodeVectorizer
 
+
 def main(name=None, thresh=.3, vectorizer=None):
-    data = load_data(name)
+    data = load_files(name)
     pipe = make_pipe(vectorizer)
 
     cross_data = cross_validation.train_test_split(
                                        data[0], data[1], test_size=thresh)
-
-
 
     pipe.fit(cross_data[0], cross_data[2])
 
@@ -36,17 +37,6 @@ def main(name=None, thresh=.3, vectorizer=None):
     joblib.dump(pipe, 'dumps/pipe.pkl')
 
 
-def load_data(name):
-    data = load_files(name)
-    names = list({item for item in data[1]})
-
-    np.save('data_keys', np.array(names))
-
-    for idx in range(len(data[1])):
-        data[1][idx] = names.index(data[1][idx])
-
-    return data
-
 def make_pipe(vectorizer=None):
     if vectorizer is None:
         tf = TfidfVectorizer(sublinear_tf=True, token_pattern= \
@@ -54,14 +44,12 @@ def make_pipe(vectorizer=None):
     else:
         tf = vectorizer
 
-
     rf = RandomForestClassifier()#, max_features=None)
     return Pipeline([('tf', tf), ('rf', rf)])
 
 def save_matrix(filename, array):
     np.savez(filename, data = array.data ,indices=array.indices,
              indptr=array.indptr, shape=array.shape)
-
 
 
 if __name__ == '__main__':
@@ -77,6 +65,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.cv:
-            vect=CodeVectorizer()
+        vect = CodeVectorizer(TfidfVectorizer())
 
     main(args.name, args.thresh, vect)

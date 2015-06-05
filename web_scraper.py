@@ -1,119 +1,16 @@
 from bs4 import BeautifulSoup
-import requests
 import urllib
-from re import findall
 import pandas as pd
 import random
-import numpy as np
-from sklearn import linear_model
-from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.naive_bayes import GaussianNB
-from sklearn.naive_bayes import BernoulliNB
-import re
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report
 
-
-
-languages_list = ['ACL2',
- 'Ada',
- 'Aime',
- 'ALGOL 68',
- 'AppleScript',
- 'AutoHotkey',
- 'AutoIt',
- 'AWK',
- 'BASIC',
- 'BBC BASIC',
- 'bc',
- 'Brat',
- 'C',
- 'C++',
- 'C#',
- 'Clojure',
- 'COBOL',
- 'CMake',
- 'CoffeeScript',
- 'Common Lisp',
- 'D',
- 'Delphi',
- 'DWScript',
- 'E',
- 'Eiffel',
- 'Erlang',
- 'ERRE',
- 'Euphoria',
- 'Factor',
- 'Fantom',
- 'Forth',
- 'Fortran',
- 'Frink',
- 'F#',
- 'FunL',
- 'GAP',
- 'Go',
- 'Groovy',
- 'Haskell',
- 'Icon and Unicon',
- 'Inform 6',
- 'J',
- 'Java',
- 'JavaScript',
- 'Joy',
- 'Julia',
- 'LabVIEW',
- 'Lasso',
- 'Liberty BASIC',
- 'Logo',
- 'Lua',
- 'M4',
- 'Mathematica',
- 'MATLAB',
- 'Maxima',
- 'Modula-3',
- 'MUMPS',
- 'Nemerle',
- 'NetRexx',
- 'Nim',
- 'Objective-C',
- 'OCaml',
- 'Oforth',
- 'Oz',
- 'PARI/GP',
- 'Pascal',
- 'Perl',
- 'Perl 6',
- 'PHP',
- 'PicoLisp',
- 'PL/I',
- 'PowerShell',
- 'PureBasic',
- 'Python',
- 'R',
- 'Racket',
- 'REBOL',
- 'REXX',
- 'Ruby',
- 'Run BASIC',
- 'Rust',
- 'Scala',
- 'Scratch',
- 'Seed7',
- 'Sidef',
- 'Smalltalk',
- 'SNOBOL4',
- 'Swift',
- 'Tcl',
- 'TI-83 BASIC',
- 'TUSCRIPT',
- 'UNIX Shell',
- 'Ursala',
- 'VBScript',
- 'Vedit macro language',
- 'zkl']
 
 def get_text(url):
     """Takes a url and returns text"""
@@ -121,36 +18,6 @@ def get_text(url):
     content = urllib.request.urlopen(req).read()
     page_text=BeautifulSoup(content)
     return page_text.get_text()
-
-# def scrape_text(text):
-#     data_crop = findall("[EDIT] \n.+\n", text)
-#     return data_crop
-
-
-# def scrape_text(text):
-#     """Takes text from get_text and returns a list of tuples with
-#     language in [0] and code in [1]"""
-#     data_crop = findall(r"edit] (.+)\n(.+)\n", text)
-#     return data_crop
-#     ##Should maybe grab all of the text
-
-# def scrape_links():
-#     """Creates list of links to use with create_url to gather code."""
-#     with open ("links_list.txt", "r") as myfile:
-#         data=myfile.read()
-#     return findall(r"wiki/(.+)\" ti", data)
-#
-# language_start = ["C", "C#", "Common Lisp", "Clojure", "Haskell",
-#                   "Java", "JavaScript", "OCaml", "Perl", "PHP",
-#                   "Python", "Ruby", "Scala", "Scheme"]
-
-
-#def make_data(languages=language_start, num_links=50)
-    #grab data for all of the links in the task list
-    #go through for each of the languages and grab the associated
-    #code
-    #return a df with the code you need in a column and the type of
-    #code as the index
 
 
 def scrape_data(url):
@@ -192,24 +59,33 @@ def scrape(num_links=30):
     return df[df[0] != 'text']
 
 
-def scraper(num_links=50, min_examples=25):
+def scraper(num_links=50, min_examples=25, save=False):
     df = make_data(make_links_list(num_links))
     df = df[df[0] != 'text']
-    return df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    df = df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    if save:
+        name = "scraper_{}_x_{}.pkl".format(num_links, min_examples)
+        df.to_pickle(name)
+    return df
 
-
-def split_fit_score(dataframe, estimator="Bayes"):
+# Should we make this a class?
+def split_fit_score(dataframe, estimator="Bayes", report=False):
     df_X = dataframe.loc[:, 1]
     df_y = dataframe.loc[:, 0]
     X_train, X_test, y_train, y_test = train_test_split(df_X, df_y)
     if estimator == "Bayes":
         new_pipe = Pipeline([("bag_of_words", CountVectorizer()),
                    ("nb", MultinomialNB())])
-    elif estimator == "Gaussian":
+    elif estimator == "Forest":
         new_pipe = Pipeline([("bag_of_words", CountVectorizer()),
-                   ("gnb", GaussianNB())])
-    elif estimator == "Bernoulli":
+                   ("forest", RandomForestClassifier())])
+    elif estimator == "neighbors":
         new_pipe = Pipeline([("bag_of_words", CountVectorizer(binary=True)),
-                   ("bnb", BernoulliNB())])
+                   ("neighbors", KNeighborsClassifier())])
     new_pipe.fit(X_train, y_train)
-    return new_pipe.score(X_test, y_test)
+    if report:
+        return (classification_report(new_pipe.predict(X_test), y_test))
+    else:
+        return new_pipe.score(X_test, y_test)
+
+

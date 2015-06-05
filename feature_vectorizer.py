@@ -1,10 +1,8 @@
 import re
-import csv
-import re
 import numpy as np
 import random
 from collections import Counter
-
+import itertools
 from sklearn.pipeline import make_pipeline, make_union
 from sklearn.base import TransformerMixin
 from sklearn.tree import DecisionTreeClassifier
@@ -22,39 +20,29 @@ def longest_run_of_capitol_letters_feature(text):
         return [0]
 
 
-# def longest_run_of_character_feature(char):
-#     """Find the longest run of char and return length."""
-#     def feature_fn(text):
-#         if char == "~":
-#             runs = sorted(re.findall(r"~+", text), key=len)
-#         elif char == ".":
-#             runs = sorted(re.findall(r"\.+", text), key=len)
-#         elif char == "|":
-#             runs = sorted(re.findall(r"\|+", text), key=len)
-#         elif char == ";":
-#             runs = sorted(re.findall(r";+", text), key=len)
-#         elif char == ":":
-#             runs = sorted(re.findall(r"\:+", text), key=len)
-#         elif char == "$":
-#             runs = sorted(re.findall(r"\$+", text), key=len)
-#         elif char == "(":
-#             runs = sorted(re.findall(r"\(+", text), key=len)
-#         elif char == ")":
-#             runs = sorted(re.findall(r"\)", text), key=len)
-#         elif char == "-":
-#             runs = sorted(re.findall(r"\-", text), key=len)
-#         if runs:
-#             return len(runs[-1])
-#         else:
-#             return 0
-#     return feature_fn
-
-
 def percent_character_feature(char_list):
     """Return percentage of text that is a particular char compared to total text length."""
     def feature_fn(text):
         return [text.count(i)/len(text) for i in char_list]
     return feature_fn
+
+
+def longest_run_of_tabs_feature(text):
+    """Find the longest run of capitol letters and return their length."""
+    runs = sorted(re.findall(r"\t+", text), key=len)
+    if runs:
+        return [len(runs[-1])]
+    else:
+        return [0]
+
+
+def longest_run_of_spaces_feature(text):
+    """Find the longest run of capitol letters and return their length."""
+    runs = sorted(re.findall(r" +", text), key=len)
+    if runs:
+        return [len(runs[-1])]
+    else:
+        return [0]
 
 
 def longest_run_of_character_feature(text):
@@ -70,9 +58,6 @@ def longest_run_of_character_feature(text):
     return runs
 
 
-
-
-
 class FunctionFeaturizer(TransformerMixin):
     def __init__(self, *featurizers):
         self.featurizers = featurizers
@@ -85,27 +70,19 @@ class FunctionFeaturizer(TransformerMixin):
     def transform(self, X):
         fvs = []
         for datum in X:
-            fv = np.array([f(datum) for f in self.featurizers])
-            fvs.append(fv.reshape(1, -1)[0])
-        return np.array(fvs)
+            fv = [f(datum) for f in self.featurizers]
+            a = list(itertools.chain(*fv))
+            fvs.append(a)
+        return fvs
 
-
-
-    # def transform(self, X):
-    #     """Given a list of original data, return a list of feature vectors."""
-    #     fvs = []
-    #     for datum in X:
-    #         fv = [f(datum) for f in self.featurizers]
-    #         fvs.append(fv)
-    #     return np.array(fvs)
-
-
-sms_featurizer = make_union(
-    CountVectorizer(),
-    FunctionFeaturizer(longest_run_of_capitol_letters_feature,
-                       percent_character_feature(".")))
-
-
-pipe = make_pipeline(sms_featurizer, DecisionTreeClassifier())
-pipe.fit(X_train, y_train)
-pipe.score(X_test, y_test)
+#
+#
+# sms_featurizer = make_union(
+#     CountVectorizer(),
+#     FunctionFeaturizer(longest_run_of_capitol_letters_feature,
+#                        percent_character_feature(".")))
+#
+#
+# pipe = make_pipeline(sms_featurizer, DecisionTreeClassifier())
+# pipe.fit(X_train, y_train)
+# pipe.score(X_test, y_test)

@@ -4,12 +4,19 @@ import urllib
 from re import findall
 import pandas as pd
 import random
+import numpy as np
+from sklearn import linear_model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+from sklearn.cross_validation import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import BernoulliNB
+import re
 
 
-#def get_text(url):
-# Ruby (.jruby, .yarv)
-# Scala
-# Scheme (.racket)
 
 languages_list = ['ACL2',
  'Ada',
@@ -168,10 +175,6 @@ def make_data(url_list):
     return code_snippets
 
 
-# def create_url_for_scraping(task_string):
-#    return "http://www.rosettacode.org{}".format(task_string)
-
-
 def scrape_links():
     req = urllib.request.Request('http://rosettacode.org/wiki/Category:Programming_Tasks', headers={'User-Agent': 'Mozilla/5.0'})
     content = urllib.request.urlopen(req).read()
@@ -187,3 +190,26 @@ def make_links_list(num_links=30):
 def scrape(num_links=30):
     df = make_data(make_links_list(num_links))
     return df[df[0] != 'text']
+
+
+def scraper(num_links=50, min_examples=25):
+    df = make_data(make_links_list(num_links))
+    df = df[df[0] != 'text']
+    return df.groupby(0).filter(lambda x: len(x) >= min_examples)
+
+
+def split_fit_score(dataframe, estimator="Bayes"):
+    df_X = dataframe.loc[:, 1]
+    df_y = dataframe.loc[:, 0]
+    X_train, X_test, y_train, y_test = train_test_split(df_X, df_y)
+    if estimator == "Bayes":
+        new_pipe = Pipeline([("bag_of_words", CountVectorizer()),
+                   ("nb", MultinomialNB())])
+    elif estimator == "Gaussian":
+        new_pipe = Pipeline([("bag_of_words", CountVectorizer()),
+                   ("gnb", GaussianNB())])
+    elif estimator == "Bernoulli":
+        new_pipe = Pipeline([("bag_of_words", CountVectorizer(binary=True)),
+                   ("bnb", BernoulliNB())])
+    new_pipe.fit(X_train, y_train)
+    return new_pipe.score(X_test, y_test)

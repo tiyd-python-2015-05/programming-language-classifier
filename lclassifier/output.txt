@@ -1,0 +1,129 @@
+   total samples 931
+ number of usable files 656
+ 
+ number of read file types:  32
+ number of recognized types: 14
+ summary of tile types
+ats             
+clj            38  
+cs             41  
+dart            
+erlang          
+fpascal         
+fsharp          
+c              129  
+hs             33  
+gnat            
+go              
+php            55  
+ifc             
+java           51  
+js             25  
+ruby           73  
+lua             
+ocaml          35  
+oz              
+pl             34  
+py             36  
+racket         29  
+rust            
+sbcl           34  
+scala          43  
+vw              
+cint            
+javasteady      
+parrot          
+cc              
+txt             
+ozf             
+ not included:  
+ 
+32 15
+217 15
+  failed to classify
+hs     misclassified as py
+racket misclassified as sbcl
+racket misclassified as sbcl
+racket misclassified as sbcl
+clj    misclassified as sbcl
+racket misclassified as sbcl
+hs     misclassified as pl
+racket misclassified as sbcl
+scala  misclassified as c
+clj    misclassified as sbcl
+racket misclassified as sbcl
+hs     misclassified as py
+hs     misclassified as py
+racket misclassified as sbcl
+cs     misclassified as js
+clj    misclassified as sbcl
+cs     misclassified as py
+scala  misclassified as py
+clj    misclassified as sbcl
+racket misclassified as sbcl
+racket misclassified as sbcl
+ruby   misclassified as racket
+racket misclassified as sbcl
+scala  misclassified as py
+clj    misclassified as sbcl
+js     misclassified as racket
+hs     misclassified as pl
+hs     misclassified as sbcl
+racket misclassified as sbcl
+racket misclassified as sbcl
+js     misclassified as racket
+scala  misclassified as py
+racket misclassified as sbcl
+32 36
+217 36
+<_csv.reader object at 0x10855d908>
+ number of testing file types: 11
+['clj', 'clj', 'clj', 'clj', 'py', 'py', 'py', 'py', 'js', 'js', 'js', 'js', 'ruby', 'ruby', 'ruby', 'haskell', 'haskell', 'haskell', 'racket', 'racket', 'racket', 'java', 'java', 'scala', 'scala', 'tcl', 'tcl', 'php', 'php', 'php', 'ocaml', 'ocaml']
+ score_train 1 0.986332574032
+ score_test  1 0.898617511521
+ score_quest 1 0.59375
+ pred 1 ['clj' 'clj' 'clj' 'ruby' 'py' 'py' 'ruby' 'py' 'js' 'js' 'clj' 'php'
+ 'ruby' 'clj' 'ruby' 'hs' 'hs' 'ruby' 'sbcl' 'racket' 'racket' 'java'
+ 'ruby' 'scala' 'scala' 'racket' 'py' 'c' 'php' 'php' 'ocaml' 'ocaml']
+ 
+ score_train 2 1.0
+ score_test  2 0.972350230415
+ score_quest 2 0.65625
+ pred 2 ['clj' 'clj' 'ruby' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'ruby' 'hs' 'ruby' 'ruby' 'sbcl' 'java' 'java' 'scala'
+ 'scala' 'ruby' 'ruby' 'php' 'php' 'java' 'ocaml' 'ruby']
+ 
+ score_train 3 0.833712984055
+ score_test  3 0.78801843318
+ score_quest 3 0.71875
+ pred 3 ['clj' 'clj' 'clj' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'racket' 'hs' 'scala' 'racket' 'scala' 'java' 'racket'
+ 'scala' 'scala' 'racket' 'racket' 'java' 'php' 'php' 'ocaml' 'ocaml']
+ 
+ score_train 4 0.974943052392
+ score_test  4 0.981566820276
+ score_quest 4 0.71875
+ pred 4 ['clj' 'clj' 'sbcl' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'hs' 'hs' 'racket' 'racket' 'racket' 'java' 'c' 'scala'
+ 'scala' 'c' 'c' 'java' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_train 5 1.0
+ score_test  5 0.976958525346
+ score_quest 5 0.59375
+ pred 5 ['ruby' 'ruby' 'ruby' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'ruby' 'hs' 'racket' 'ruby' 'ruby' 'java' 'java' 'hs'
+ 'scala' 'ruby' 'ruby' 'php' 'php' 'cs' 'ocaml' 'ruby']
+ 
+['#']
+1
+clj      10   4    8    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    4    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+py       0    0    0    74   18   10   60   0    0    0    0    0    0    0    8    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+js       1    2    0    0    0    0    0    42   20   86   0    0    0    0    0    0    0    0    2    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    2    0    
+ruby     0    0    0    0    0    0    0    0    0    0    20   11   3    7    4    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+haskell  0    0    0    0    0    59   0    0    0    0    0    0    0    0    0    1    10   0    0    0    0    0    0    0    0    0    1    0    0    0    0    0    0    0    0    0    
+racket   126  5    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    52   5    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+java     0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    0    0    0    8    0    0    0    0    0    0    0    0    0    0    0    0    0    0    78   13   
+scala    1    0    0    0    0    1    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    5    7    0    0    0    0    0    0    0    0    0    0    2    2    0    
+tcl      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    2    0    0    0    0    0    0    0    0    0    0    0    0    
+php      0    0    0    0    0    0    0    0    0    8    0    0    0    0    0    0    0    0    0    17   0    0    0    0    11   5    0    0    0    0    0    0    0    0    92   26   
+ocaml    6    0    0    0    0    0    0    0    4    0    2    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    35   1    0    0    0    0    0    0    1    0    

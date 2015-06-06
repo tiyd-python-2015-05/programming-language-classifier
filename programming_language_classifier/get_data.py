@@ -29,7 +29,6 @@ def get_content(directory):
         extension = os.path.splitext(file)[1]
         if extension in extensions:
             with open(directory + file) as fh:
-
                 content.append([extensions[extension], fh.read()])
     return content
 

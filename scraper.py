@@ -3,62 +3,20 @@ import urllib
 from re import findall
 import pandas as pd
 import random
-from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import classification_report
 from sklearn.cross_validation import cross_val_score
+import pickle
 
-# C (.gcc, .c)
-# C#
-# Common Lisp (.sbcl)
-# Clojure
-# Haskell
-# Java
-# JavaScript
-# OCaml
-# Perl
-# PHP (.hack, .php)
-# Python
-# Ruby (.jruby, .yarv)
-# Scala
-# Scheme (.racket)
-
-# def get_text(url):
-#     """Takes a url and returns text"""
-#     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-#     content = urllib.request.urlopen(req).read()
-#     page_text=BeautifulSoup(content)
-#     return page_text.get_text()
-
-# def scrape_text(text):
-#     data_crop = findall("[EDIT] \n.+\n", text)
-#     return data_crop
-
-
-# def scrape_text(text):
-#     """Takes text from get_text and returns a list of tuples with
-#     language in [0] and code in [1]"""
-#     data_crop = findall(r"edit] (.+)\n(.+)\n", text)
-#     return data_crop
-#     ##Should maybe grab all of the text
+# language_start = ["C", "C#", "Common Lisp", "Clojure", "Haskell",
+#                   "Java", "JavaScript", "OCaml", "Perl", "PHP",
+#                   "Python", "Ruby", "Scala", "Scheme"]
 #
-# def scrape_links():
-#     """Creates list of links to use with create_url to gather code."""
-#     with open ("links_list.txt", "r") as myfile:
-#         data=myfile.read()
-#     return findall(r"wiki/(.+)\" ti", data)
-
-
-# def create_url_for_scraping(task_string):
-#     return "http://www.rosettacode.org{}".format(task_string)
-
-language_start = ["C", "C#", "Common Lisp", "Clojure", "Haskell",
-                  "Java", "JavaScript", "OCaml", "Perl", "PHP",
-                  "Python", "Ruby", "Scala", "Scheme"]
-
 
 def scrape_data(url):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -98,14 +56,29 @@ def scrape_and_clean(num_links=30):
     new_df = df[df[0]!='text']
     return new_df
 
-
-def scrape_clean_cut(num_links=100, min_examples=40):
+def scrape_clean_cut(num_links=100, min_examples=40, save=False):
     df = make_data(make_links_list(num_links))
     new_df = df[df[0]!='text']
     new_df = new_df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    if save:
+        new_df.to_pickle("scraper_{}x{}.pkl".format(num_links, min_examples))
     return new_df
 
-def pipeline_runner(dataframe, estimator):
+
+def scrape_clean_cut_filter(num_links=100, min_examples=40, save=False):
+    df = make_data(make_links_list(num_links))
+    df = df[df[0]!='text']
+    new_df = df[(df[0] == 'clojure') | (df[0] == 'haskell') | (df[0] == 'java') | (df[0] == 'javascript')
+                | (df[0] == 'ocaml') | (df[0] == 'php') | (df[0] == 'python') | (df[0] == 'ruby')
+                | (df[0] == 'scala') | (df[0] == 'scheme') | (df[0] == 'tcl')]
+    
+    new_df = new_df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    if save:
+        new_df.to_pickle("scraper_filtered_{}x{}.pkl".format(num_links, min_examples))
+    return new_df
+
+def pipeline_runner(dataframe, estimator='Multinomial', report=False):
+    """Should have made this a class not a function"""
     ##Re-testing with MultinomialNB
     y = dataframe.loc[:, 0]
     X = dataframe.loc[:, 1]
@@ -115,16 +88,20 @@ def pipeline_runner(dataframe, estimator):
     if estimator == 'Multinomial':
         estimator_pipe = Pipeline([('bag_of_words', CountVectorizer()),
                               ('mnb', MultinomialNB())])
-    elif estimator == 'Gaussian':
+    elif estimator == 'KNeighbors':
         estimator_pipe = Pipeline([('bag_of_words', CountVectorizer()),
-                              ('gnb', GaussianNB())])
-    elif estimator == 'Bernoulli':
-        estimator_pipe = Pipeline([('bag_of_words', CountVectorizer(binary=True)),
-                              ('bnb', BernoulliNB())])
+                              ('knn', KNeighborsClassifier())])
+    elif estimator == 'Forest':
+        estimator_pipe = Pipeline([('bag_of_words', CountVectorizer()),
+                              ('forest', RandomForestClassifier())])
     else:
         return pipeline_runner(dataframe, estimator)
     #fitting
     estimator_pipe.fit(X_train, y_train)
     #checking score
-    return estimator_pipe.score(X_train, y_train), estimator_pipe.score(X_test, y_test)
+    if report:
+        return (classification_report(estimator_pipe.predict(X_test), y_test))
+    else:
+        return estimator_pipe.score(X_train, y_train), estimator_pipe.score(X_test, y_test)
+
 

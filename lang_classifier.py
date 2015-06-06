@@ -15,22 +15,28 @@ import os.path
 # use n-grams?
 # inverse_transform or otherwise make an best-case exemplar
 # web scraping
+# need an example of tcl
 
 def make_extension_dict():
-    extensions = {'C': ['gcc', 'c'],
-                  'C#': 'csharp',
-                  'Common Lisp': 'sbcl',
-                  'Clojure': 'clojure',
-                  'Haskell': 'haskell',
-                  'Java': 'java',
-                  'JavaScript': 'javascript',
-                  'OCaml': 'ocaml',
-                  'Perl': 'perl',
-                  'PHP': ['hack', 'php'],
-                  'Python': 'python3',
-                  'Ruby': ['jruby', 'yarv'],
-                  'Scala': 'scala',
-                  'Scheme': 'racket',
+    """
+    Returns a dictionary for translating benchmark file extensions
+    to the name of the programming language
+    """
+    extensions = {'c': ['gcc', 'c'],
+                  'csharp': 'csharp',
+                  'commonlisp': 'sbcl',
+                  'clojure': 'clojure',
+                  'haskell': 'ghc',
+                  'java': 'java',
+                  'javascript': 'javascript',
+                  'ocaml': 'ocaml',
+                  'perl': 'perl',
+                  'php': ['hack', 'php'],
+                  'python': 'python3',
+                  'ruby': ['jruby', 'yarv'],
+                  'scala': 'scala',
+                  'scheme': 'racket',
+                  'tcl': 'tcl',
                   }
 
     ext_lookup = {}
@@ -59,11 +65,11 @@ def load_bench_data(reload=False):
         return df
     df = pd.DataFrame(columns=['language', 'text'])
     files = glob.glob('bench/*/*')
-
+    exts = make_extension_dict()
     for fn in files:
         try:
             with open(fn) as fh:
-                data = {'language': extract_extension(fn),
+                data = {'language': exts.get(extract_extension(fn), None),
                         'text': ''.join(fh.readlines())}
                 if data['language'] and data['text']:
                     df = df.append(data, ignore_index=True)
@@ -141,7 +147,7 @@ class CustomFeaturizer:
 
 
 if __name__ == '__main__':
-    df = load_bench_data()
+    df = load_bench_data(reload=True)
     X = df.text
     y = df.language
     test_data = load_test_data()
@@ -167,5 +173,5 @@ if __name__ == '__main__':
     print(test_data)
 
 
-    featurizer = CustomFeaturizer(longest_run_of_capitol_letters_feature,
+    featurizer = CustomFeaturizer(longest_run_of_caps_feature,
                                   percent_periods_feature)

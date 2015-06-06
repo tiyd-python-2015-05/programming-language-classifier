@@ -3,7 +3,7 @@ from lang_classifier import *
 
 def test_make_extension_dict():
     ext_lookup = make_extension_dict()
-    assert ext_lookup['php'] == 'PHP'
+    assert ext_lookup['php'] == 'php'
     # assert ext_lookup['NONExISTNTANT!'] is None
 
 
@@ -16,6 +16,21 @@ def test_load_bench_data():
     df = load_bench_data()  # reload=True)
     print(df.head(5))
     assert df['language'][2] == 'clojure'
+
+
+def test_bench_data_only_contains_desired_languages():
+    df = load_bench_data(reload=True)
+
+    langs  = ['clojure', 'python', 'javascript', 'ruby', 'haskell', 'scheme',
+              'java', 'scala',
+              #'tcl', # in reqs + tests, but no examples in bench
+              'c', 'csharp', 'commonlisp', 'perl', # in reqs + bench, no tests
+              'php', 'ocaml']
+    training = df['language'].unique()
+    for lang in langs:
+        assert lang in training  # We have examples for each required language
+    for lang in training:
+        assert lang in langs  # We don't train for any non-required languages
 
 
 def test_load_test_data():
@@ -38,8 +53,8 @@ def test_assess_classifier():
                           ('bayes', MultinomialNB())])
     classifier = assess_classifier(spam_pipe, *args)
     c = classifier.predict(X)
-    assert len(c) == 923
-    assert c[3] == 'clojure'
+    assert len(c) == 584  # 923 total
+    assert c[3] == 'csharp'
 
 def test_longest_run_of_caps_feature():
     assert longest_run_of_caps_feature(
@@ -53,6 +68,9 @@ def test_featurizer():
                                   percent_periods_feature)
     np.testing.assert_equal(featurizer.transform(['AAH! feature....'])
            , np.array([[ 3.        ,  0.25]]))
+
+
+
 """
     df = load_bench_data()
     X = df.text

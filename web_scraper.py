@@ -68,6 +68,22 @@ def scraper(num_links=50, min_examples=25, save=False):
         df.to_pickle(name)
     return df
 
+
+def scraper_filter(num_links=50, min_examples=1, save=False):
+    df = make_data(make_links_list(num_links))
+    df = df[df[0] != 'text']
+    df = df[(df[0] == 'ada') | (df[0] == 'clojure') | (df[0] == "algol68") | (df[0] == "awk")
+                     | (df[0] == "bash") | (df[0] == "haskell") | (df[0] == "java") | (df[0] == "javascript")
+                     | (df[0] == "lisp") | (df[0] == "objc") | (df[0] == "ocaml") | (df[0] == "php")
+                     | (df[0] == "python") | (df[0] == "ruby") | (df[0] == "scala") | (df[0] == "scheme")
+                     | (df[0] == "tcl")]
+    df = df.groupby(0).filter(lambda x: len(x) >= min_examples)
+    if save:
+        name = "scraper_filter_{}_x_{}.pkl".format(num_links, min_examples)
+        df.to_pickle(name)
+    return df
+
+
 # Should we make this a class?
 def split_fit_score(dataframe, estimator="Bayes", report=False):
     df_X = dataframe.loc[:, 1]

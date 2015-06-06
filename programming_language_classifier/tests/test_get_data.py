@@ -15,18 +15,5 @@ def test_make_dataframe():
     assert gd.make_dataframe(test_list)[1][2] == "This is a Ruby file\n"
 
 
-'javascript': '.js',
-             'haskell': '.haskell',
-             'scala': '.scala',
-             'ocaml': '.ocaml',
-             'ruby': '.jruby',
-             'php': '.php',
-             'clojure': '.clojure',
-             'perl': '.perl',
-             'csharp': '.csharp',
-             'java': '.java',
-             'c': '.gcc',
-             'scheme': '.racket',
-             'python': '.py',
-             'lisp': '.sbcl',
+
 

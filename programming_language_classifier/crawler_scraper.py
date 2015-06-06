@@ -4,7 +4,21 @@ import sys
 import re
 
 
-languages = {'tcl': '.tcl'}
+languages = {'javascript': '.js',
+             'haskell': '.haskell',
+             'scala': '.scala',
+             'ocaml': '.ocaml',
+             'ruby': '.jruby',
+             'php': '.php',
+             'clojure': '.clojure',
+             'perl': '.perl',
+             'csharp': '.csharp',
+             'java': '.java',
+             'c': '.gcc',
+             'scheme': '.racket',
+             'python': '.py',
+             'lisp': '.sbcl',
+             'tcl': '.tcl'}
 
 def rosetta_scraper(seed, path):
     response = requests.get(seed)
@@ -17,7 +31,7 @@ def rosetta_scraper(seed, path):
              for a in all_a
              if a.attrs.get("href") and "wiki" in a.attrs.get("href")]
     count = 1
-    for link in links[:50]:
+    for link in links:
         response = requests.get(link)
         soup = bs4.BeautifulSoup(response.text)
         code = soup.select('pre')

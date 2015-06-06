@@ -1,4 +1,4 @@
-from programming_language_classifier import plc
+import programming_language_classifier.plc_trainer as plc
 
 
 def test_percent_elements():

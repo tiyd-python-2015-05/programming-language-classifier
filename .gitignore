@@ -4,6 +4,9 @@
 # Temporary data
 .ipynb_checkpoints/
 
+### PyCharm ###
+.idea
+
 # Created by https://www.gitignore.io
 
 ### Python ###

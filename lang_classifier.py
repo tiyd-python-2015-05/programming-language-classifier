@@ -100,7 +100,7 @@ def assess_classifier(pipe, *split_args):
     return pipe
 
 
-def longest_run_of_capitol_letters_feature(text):
+def longest_run_of_caps_feature(text):
     runs = sorted(re.findall(r"[A-Z]+", text), key=len)
     if len(runs) == 0:
         return [0]
@@ -112,10 +112,6 @@ def percent_periods_feature(text):
     """Return percentage of text that is periods compared to total text length."""
     periods = text.count(".")
     return [periods / len(text)]
-
-
-def feature_vector(text):
-    return longest_run_of_capitol_letters_feature(text) + percent_periods_feature(text)
 
 
 def unpickle(name, reload=False):
@@ -148,7 +144,7 @@ if __name__ == '__main__':
     df = load_bench_data()
     X = df.text
     y = df.language
-    test_data = load_bench_data()
+    test_data = load_test_data()
 
     args = train_test_split(X, y, test_size=0.2, )  # random_state=0) # X_train, X_test, y_train, y_test
 
@@ -156,7 +152,7 @@ if __name__ == '__main__':
                           ('bayes', MultinomialNB())])
     print(spam_pipe)
     classifier = assess_classifier(spam_pipe, *args)
-    classifier.predict(args[1].iloc[2])
+    classifier.predict(args[1])
 
     spam_pipe = Pipeline([('bag_of_words', CountVectorizer()),
                           ('tfidf', TfidfTransformer()),
@@ -168,10 +164,8 @@ if __name__ == '__main__':
     test_data['guess'] = pd.DataFrame(spam_pipe.predict(test_data['text']))
     correct = test_data[test_data.language == test_data.guess]
     print('Proportion of test data correctly labeled: {:.3f}'.format(len(correct) / len(test_data)))
+    print(test_data)
 
-    longest_run_of_capitol_letters_feature('ABCabddwAAAA absd AB sd A.AA.AAA')
-    percent_periods_feature('. . . . ')
-    feature_vector('AAH! feature_vector... ')
 
     featurizer = CustomFeaturizer(longest_run_of_capitol_letters_feature,
                                   percent_periods_feature)

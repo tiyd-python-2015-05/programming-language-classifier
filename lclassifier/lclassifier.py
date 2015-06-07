@@ -15,6 +15,7 @@ from sklearn.base import TransformerMixin
 # other utilities
 import csv
 import re
+import sys
 
 
 def acceptable_file(text):
@@ -60,7 +61,7 @@ def list_uniques(alist):
 
 def load_file_names():
     l = [0 for i in range(5)]
-    s = "benchmarksgame-2014-08-31/benchmarksgame/bench/"
+    s = "../benchmarksgame-2014-08-31/benchmarksgame/bench/"
     max_lvl = 4
     for i in range(max_lvl):
         l[i] = glob(s+"*/"*i+"*.*")
@@ -70,7 +71,7 @@ def load_file_names():
     filelist = []
     for i in range(max_lvl):
         filelist += l[i]
-    testlist = glob("test/*")
+    testlist = glob("../test/*")
 
     print("   total samples "+str(len(filelist)))
     return filelist, testlist
@@ -125,7 +126,7 @@ def load_files(filelist, testlist):
     #print(testlist)
 
 def read_answers():
-    with open("test.csv") as csvfile:
+    with open("../test.csv") as csvfile:
         ans_list = csv.reader(csvfile, delimiter=",")
         ans = []
         print(ans_list)
@@ -224,19 +225,14 @@ class CustomFeaturizer(TransformerMixin):
         matrix = []
         for text in X:
             v = [0] * len(reg_list)
-#            print(str(len(v))+" "+str(len(reg_list)))
             for i in range(len(reg_list)):
-#                print(reg_expr)
                 reg_expr = reg_list[i]
                 prog = re.compile(reg_expr, flags=re.MULTILINE)
                 val = len(prog.findall(text))#/len(text)
                 #if val > 0:
                 #    val = 1
-#                print(i)
                 v[i] = val
-#            print(vector)
             matrix.append(v)
-#        print(matrix[0])
         return matrix
 
 
@@ -288,12 +284,8 @@ def demo_class(X, y):
             print(str(int(M[j][k])).ljust(5), end="")
         print("")
 
-#sms_featurizer = CustomFeaturizer(longest_run_of_capital_letters_feature,
-#                                  percent_periods_feature)
-#big_list = sms_featurizer.transform(sms_data[:10])
-#print(big_list)
 
-if __name__ == "__main__":
+def default_action():
     filelist, testlist = load_file_names()
     contents, ltype, testcont = load_files(filelist, testlist)
 
@@ -301,34 +293,40 @@ if __name__ == "__main__":
 
     X, Xt, y, yt = train_test_split(contents, ltype, test_size=0.33)
     pipel = [0 for i in range(len(plist))]
+    print(" score for    training_set     test_set")
     for i in range(len(plist)):
-        pipel[i] = plist[i](X, y)
-    #pipe1 = fit1(contents, ltype)
-    #pipe2 = fit2(contents, ltype)
-    pipe = fit4(X, y)
-    M = pipe.transform(testcont)
-    print(str(len(M))+" "+str(len(M[0])))
-#    print(M[0])
-    M = pipe.transform(Xt)
-    print(str(len(M))+" "+str(len(M[0])))
+        pipe = plist[i](X, y)
+        print(str(i).ljust(4)+" "+str(round(pipe.score(X, y),4)).ljust(8)\
+              +str(round(pipe.score(Xt, yt),4)).ljust(8))
+    print(" ")
+    for i in range(len(plist)):
+        pipel[i] = plist[i](contents, ltype)
+
     print("  failed to classify")
+    failed_to_classify = {}
+    wrongly_classified = {}
     A = pipe.predict(X)
     for i in range(len(A)):
         if A[i] != y[i]:
 #            print(" ")
             print(y[i].ljust(6)+" misclassified as "+A[i])
-#            print(X[i])
-#    print(M[0])
-
-
-    cf = CustomFeaturizer()
-    M = cf.transform(testcont)
-    print(str(len(M))+" "+str(len(M[0])))
-#    print(M[0])
-    M = cf.transform(Xt)
-    print(str(len(M))+" "+str(len(M[0])))
-#    print(M[0])
-    #print(testcont)
+            if y[i] in failed_to_classify:
+                failed_to_classify[y[i]] += 1
+            else:
+                failed_to_classify[y[i]] = 1
+            if A[i] in wrongly_classified:
+                wrongly_classified[A[i]] += 1
+            else:
+                wrongly_classified[A[i]] = 1
+    print("")
+    print(" failure counts")
+    print("  wrongly classified:")
+    for ext in wrongly_classified:
+        print(ext.ljust(7) + "#"*wrongly_classified[ext])
+    print("  failed to classify")
+    for ext in failed_to_classify:
+        print(ext.ljust(7) + "#"*failed_to_classify[ext])
+    print(" ")
 
     ans = read_answers()
     print(ans)
@@ -336,14 +334,29 @@ if __name__ == "__main__":
     i = 0
     for pipe in pipel:
         i += 1
-        print(" score_train "+str(i)+" "+str(pipe.score(X, y)))
-        print(" score_test  "+str(i)+" "+str(pipe.score(Xt, yt)))
         print(" score_quest "+str(i)+" "+str(pipe.score(testcont, ans)))
         print(" pred "+str(i)+" "+str(pipe.predict(testcont)))
         print(" ")
 
-    word_list = re.findall(r"^#", "# include ")
-    print(word_list)
-    print(len(word_list))
-
     demo_class(testcont, ans)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        default_action()
+    elif len(sys.argv) == 2:
+        test_file = sys.argv[1]
+        print("Estimating file type of "+ test_file)
+
+        filelist, testlist = load_file_names()
+        X, y, testcont = load_files(filelist, testlist)
+        pipe = fit6(X, y)
+        with open(test_file) as f:
+            test_contents = f.read()
+#        print(test_contents)
+        est_ext = pipe.predict([test_contents])
+
+        print("Predicted extension: "+str(est_ext))
+
+    else:
+        print("error: command line arguments not supported")

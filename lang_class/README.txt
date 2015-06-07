@@ -14,3 +14,11 @@ To run the classifier on specified test data:
 To run the classifier on specified test data and compare
 to specified answers (must be saved np.array format):
 ./classifier.py --from_text=(filename or folder name) --Ytest=answer_file_name.npy
+
+
+The preprocessor can use TfidfVectorizer with an altered tokenizer
+or with the -cv argument will use the custom CodeVectorizer
+
+The classifier can be either a Decision Tree (default) or 
+you can specify Multinomial Naive Bayes by passing
+-bayes to ./classifier.py

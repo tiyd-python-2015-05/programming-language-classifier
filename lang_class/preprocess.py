@@ -14,6 +14,13 @@ from vectorizer import CodeVectorizer
 
 
 def main(name=None, thresh=.3, vectorizer=None):
+    """
+    breaks the data into test/train cases
+    and trains a vectorizer and random forest
+    on the test data, then saves the results
+    to Xtr.npz, Ytr.npy, Xte.npz, Yte.npy
+    and pickles the pipeline
+    """
     data = load_files(name)
     pipe = make_pipe(vectorizer)
 
@@ -38,16 +45,25 @@ def main(name=None, thresh=.3, vectorizer=None):
 
 
 def make_pipe(vectorizer=None):
+    '''
+    creates a pipeline with the given
+    vectorizer or the Tfidf if none given
+    and a random forest classifier
+    '''
     if vectorizer is None:
         tf = TfidfVectorizer(sublinear_tf=True, token_pattern= \
-                r'\b[\w\.,:\(\)\[\]\{\}\'\";%#@!*&|\<\>]+\b')#smooth_idf=True)
+                r'\b[\w\.,:\(\)\[\]\{\}\'\";%#@!*&|\<\>]+\b', stop_words=None,
+                binary=True)
     else:
         tf = vectorizer
 
-    rf = RandomForestClassifier()#, max_features=None)
+    rf = RandomForestClassifier()
     return Pipeline([('tf', tf), ('rf', rf)])
 
 def save_matrix(filename, array):
+    """
+    saves the given matrix to a .npz file
+    """
     np.savez(filename, data = array.data ,indices=array.indices,
              indptr=array.indptr, shape=array.shape)
 
@@ -57,14 +73,20 @@ if __name__ == '__main__':
                                     of programs and train a classifier on \
                                     them')
 
-    parser.add_argument('--thresh', default=.5, type=float)
-    parser.add_argument('--name', default=None, type=str)
-    parser.add_argument('--cv', default=False, type=bool)
+    parser.add_argument('--thresh', default=.5, type=float, help='specify \
+                        a test/train split %')
+
+    parser.add_argument('--name', default=None, type=str, help='specify \
+                        a source for the test data')
+
+    parser.add_argument('-cv', help= 'Use CodeVectorizer rather than \
+                        TfidfVectorizer with altered tokenizer',
+                        action='store_true')
 
     vect=None
     args = parser.parse_args()
 
     if args.cv:
-        vect = CodeVectorizer(TfidfVectorizer())
+        vect = CodeVectorizer(TfidfVectorizer(binary=True, norm='l1'))
 
     main(args.name, args.thresh, vect)

@@ -59,16 +59,17 @@ def test_assess_classifier():
 
 def test_longest_run_of_caps_feature():
     assert longest_run_of_caps_feature(
-        'ABCabddwAAAA absd AB sd A.AA.AAA') == [4]
+        'ABCabddwAAAA absd AB sd A.AA.AAA') == 4
 
 def test_percent_periods_feature():
-    assert percent_periods_feature('. . . . ') == [0.5]
+    assert percent_character_feature('.')('. . . . ') == 0.5
 
 def test_featurizer():
-    featurizer = CustomFeaturizer(longest_run_of_caps_feature,
-                                  percent_periods_feature)
+    featurizer = FunctionFeaturizer(longest_run_of_caps_feature,
+                                  percent_character_feature('.'))
     np.testing.assert_equal(featurizer.transform(['AAH! feature....'])
-           , np.array([[ 3.        ,  0.25]]))
+           # , np.array([[ 3.        ,  0.25]]))
+           , np.array([ 3.        ,  0.25]))
 
 
 

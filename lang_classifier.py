@@ -6,10 +6,12 @@ from sklearn.cross_validation import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.base import TransformerMixin
 import pandas as pd
 import numpy as np
 import pickle
 import os.path
+import collections
 
 # TODO: Future Ideas:
 # use n-grams?
@@ -56,6 +58,14 @@ def extract_extension(string):
         return match.groupdict()['ext']
 
 
+def unpickle(name, reload=False):
+    if os.path.isfile(name) and not reload:
+        df = pickle.load(open("bench.data", "rb"))
+        return df
+    else:
+        return None
+
+
 def load_bench_data(reload=False):
     df = unpickle('bench.data', reload=reload)
     # if os.path.isfile("bench.data") and not reload:
@@ -80,7 +90,8 @@ def load_bench_data(reload=False):
 
 
 def load_test_data():
-    test_data = pd.read_csv('./test.csv', names=['item', 'language', 'text', 'guess'])
+    test_data = pd.read_csv('./test.csv',
+                            names=['item', 'language', 'text', 'guess'])
     test_data = test_data.set_index('item')
     test_files = glob.glob('./test/*')
 
@@ -102,36 +113,36 @@ def load_test_data():
 
 
 def assess_classifier(pipe, *split_args):
+    # print(split_args[0])#, len(split_args[2]))
     pipe.fit(split_args[0], split_args[2])
     train_score = pipe.score(split_args[0], split_args[2])
     test_score = pipe.score(split_args[1], split_args[3])
-    print('Train score: {:.3f}, Test score: {:.3f}'.format(train_score, test_score))
+    print('Train score: {:.3f}, Test score: {:.3f}'.format(train_score,
+                                                           test_score))
     return pipe
 
 
 def longest_run_of_caps_feature(text):
+    """Find the longest run of capitol letters and return their length."""
     runs = sorted(re.findall(r"[A-Z]+", text), key=len)
-    if len(runs) == 0:
-        return [0]
-    longest = runs[-1]
-    return [len(longest)]
-
-
-def percent_periods_feature(text):
-    """Return percentage of text that is periods compared to total text length."""
-    periods = text.count(".")
-    return [periods / len(text)]
-
-
-def unpickle(name, reload=False):
-    if os.path.isfile(name) and not reload:
-        df = pickle.load(open("bench.data", "rb"))
-        return df
+    if runs:
+        return len(runs[-1])
     else:
-        return None
+        return 0
 
 
-class CustomFeaturizer:
+def percent_character_feature(char):
+    """Return percentage of text that is a particular char compared to total text length."""
+
+    def feature_fn(text):
+        periods = text.count(char)
+        return periods / len(text)
+
+    return feature_fn
+
+
+
+class FunctionFeaturizer(TransformerMixin):
     def __init__(self, *featurizers):
         self.featurizers = featurizers
 
@@ -140,12 +151,24 @@ class CustomFeaturizer:
         same interface. `fit` always returns the same object."""
         return self
 
+    def flatten(self, x):
+        if isinstance(x, collections.Iterable):
+            return [a for i in x for a in self.flatten(i)]
+        else:
+            return [x]
+
     def transform(self, X):
         """Given a list of original data, return a list of feature vectors."""
         fvs = []
         for datum in X:
-            fv = np.array([f(datum) for f in self.featurizers])
-            fvs.append(fv.reshape(1, -1)[0])
+            fv = [f(datum) for f in self.featurizers]
+            # if type(fv) is type([1, 2, 3]):  # FIXME: Is there a cleaner way?
+            #     fvs.extend(fv)
+            # else:
+            #     fvs.append(fv)
+        # fvs = self.flatten(fvs) # fvs = [item for sublist in fvs for item in sublist]
+        # print('fvs ==> ', fvs)
+            fvs.append(fv)
         return np.array(fvs)
 
 
@@ -155,7 +178,8 @@ if __name__ == '__main__':
     y = df.language
     test_data = load_test_data()
 
-    args = train_test_split(X, y, test_size=0.2, )  # random_state=0) # X_train, X_test, y_train, y_test
+    args = train_test_split(X, y,
+                            test_size=0.2, )  # random_state=0) # X_train, X_test, y_train, y_test
 
     spam_pipe = Pipeline([('bag_of_words', CountVectorizer()),
                           ('bayes', MultinomialNB())])
@@ -172,9 +196,9 @@ if __name__ == '__main__':
 
     test_data['guess'] = pd.DataFrame(spam_pipe.predict(test_data['text']))
     correct = test_data[test_data.language == test_data.guess]
-    print('Proportion of test data correctly labeled: {:.3f}'.format(len(correct) / len(test_data)))
+    print('Proportion of test data correctly labeled: {:.3f}'.format(
+        len(correct) / len(test_data)))
     print(test_data)
 
-
-    featurizer = CustomFeaturizer(longest_run_of_caps_feature,
-                                  percent_periods_feature)
+    featurizer = FunctionFeaturizer(longest_run_of_caps_feature,
+                                    percent_character_feature('.'))

@@ -23,7 +23,7 @@ def test_bench_data_only_contains_desired_languages():
 
     langs  = ['clojure', 'python', 'javascript', 'ruby', 'haskell', 'scheme',
               'java', 'scala',
-              #'tcl', # in reqs + tests, but no examples in bench
+              'tcl', # in reqs + tests, but no examples in bench
               'c', 'csharp', 'commonlisp', 'perl', # in reqs + bench, no tests
               'php', 'ocaml']
     training = df['language'].unique()
@@ -36,7 +36,7 @@ def test_bench_data_only_contains_desired_languages():
 def test_load_test_data():
     test_data = load_test_data()
     assert test_data['language'][1] == 'clojure'
-    assert test_data['text'][2] == 'abcdefg'
+    assert test_data['text'][2][:16] == '(ns my-cli.core)'
 
 def setup():
     df = load_bench_data()
@@ -54,7 +54,7 @@ def test_assess_classifier():
                           ('bayes', MultinomialNB())])
     classifier = assess_classifier(spam_pipe, *args)
     c = classifier.predict(X)
-    assert len(c) == 584  # 923 total
+    assert len(c) == 585  # 923 total
     assert c[3] == 'csharp'
 
 def test_longest_run_of_caps_feature():

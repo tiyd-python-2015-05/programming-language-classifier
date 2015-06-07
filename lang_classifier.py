@@ -81,11 +81,12 @@ def load_bench_data(reload=False):
 
 def load_test_data():
     test_data = pd.read_csv('./test.csv', names=['item', 'language', 'text', 'guess'])
+    test_data = test_data.set_index('item')
     test_files = glob.glob('./test/*')
 
-    for (idx, fn) in enumerate(test_files):
+    for filename in test_files:
         #     try:
-        with open(fn) as fh:
+        with open(filename) as fh:
             #         df.loc[extract_extension(fn)] = ''.join(fh.readlines())
             #         data = {'language': extract_extension(fn),
             #                 'text': ''.join(fh.readlines())}
@@ -94,7 +95,9 @@ def load_test_data():
             #     except (IsADirectoryError, UnicodeDecodeError):
             #         pass
             # test_data['text'][idx] = ''.join(fh.readlines())
-            test_data.ix[idx, 'text'] = ''.join(fh.readlines())
+            num = re.match('.*/(?P<num>\d+)$', filename).groupdict()['num']
+            # FIXME: Do this with os module instead of regex
+            test_data.ix[int(num), 'text'] = ''.join(fh.readlines())
     return test_data
 
 

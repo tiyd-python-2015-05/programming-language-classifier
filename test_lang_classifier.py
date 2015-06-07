@@ -36,6 +36,7 @@ def test_bench_data_only_contains_desired_languages():
 def test_load_test_data():
     test_data = load_test_data()
     assert test_data['language'][1] == 'clojure'
+    assert test_data['text'][2] == 'abcdefg'
 
 def setup():
     df = load_bench_data()

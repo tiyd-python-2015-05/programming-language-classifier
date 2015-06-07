@@ -1,6 +1,6 @@
 import re
 import itertools
-import get_data as gd
+from programming_language_classifier import get_data as gd
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 import pickle

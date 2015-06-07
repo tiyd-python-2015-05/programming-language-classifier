@@ -1,0 +1,96 @@
+   total samples 931
+ number of usable files 656
+ 
+ number of read file types:  32
+ number of recognized types: 14
+ summary of tile types
+ats             
+clj            38  
+cs             41  
+dart            
+erlang          
+fpascal         
+fsharp          
+c              129  
+hs             33  
+gnat            
+go              
+php            55  
+ifc             
+java           51  
+js             25  
+ruby           73  
+lua             
+ocaml          35  
+oz              
+pl             34  
+py             36  
+racket         29  
+rust            
+sbcl           34  
+scala          43  
+vw              
+cint            
+javasteady      
+parrot          
+cc              
+txt             
+ozf             
+ not included:  
+ 
+ score for    training_set     test_set
+0    0.9863  0.9124  
+1    1.0     0.9401  
+2    0.82    0.7926  
+3    0.9636  0.9447  
+4    0.9977  0.9724  
+ 
+  failed to classify
+sbcl   misclassified as racket
+
+ failure counts
+  wrongly classified:
+racket #
+  failed to classify
+sbcl   #
+ 
+<_csv.reader object at 0x1113abc18>
+ number of testing file types: 11
+['clj', 'clj', 'clj', 'clj', 'py', 'py', 'py', 'py', 'js', 'js', 'js', 'js', 'ruby', 'ruby', 'ruby', 'haskell', 'haskell', 'haskell', 'racket', 'racket', 'racket', 'java', 'java', 'scala', 'scala', 'tcl', 'tcl', 'php', 'php', 'php', 'ocaml', 'ocaml']
+ score_quest 1 0.59375
+ pred 1 ['clj' 'clj' 'clj' 'clj' 'py' 'clj' 'ruby' 'py' 'js' 'js' 'clj' 'php'
+ 'ruby' 'clj' 'ruby' 'hs' 'hs' 'clj' 'racket' 'racket' 'racket' 'java'
+ 'clj' 'scala' 'scala' 'racket' 'py' 'c' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_quest 2 0.375
+ pred 2 ['clj' 'clj' 'js' 'clj' 'js' 'hs' 'js' 'scala' 'js' 'js' 'scala' 'js' 'hs'
+ 'hs' 'hs' 'hs' 'js' 'hs' 'js' 'js' 'racket' 'ocaml' 'js' 'pl' 'scala'
+ 'ocaml' 'ocaml' 'php' 'js' 'php' 'ocaml' 'ocaml']
+ 
+ score_quest 3 0.5625
+ pred 3 ['clj' 'clj' 'cs' 'clj' 'py' 'py' 'sbcl' 'py' 'js' 'js' 'ruby' 'java'
+ 'ruby' 'ruby' 'ruby' 'hs' 'hs' 'hs' 'racket' 'racket' 'racket' 'c' 'c'
+ 'scala' 'scala' 'hs' 'hs' 'c' 'ruby' 'hs' 'ocaml' 'ocaml']
+ 
+ score_quest 4 0.59375
+ pred 4 ['clj' 'clj' 'ocaml' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'scala' 'cs'
+ 'scala' 'ruby' 'ruby' 'hs' 'hs' 'hs' 'sbcl' 'racket' 'racket' 'js' 'js'
+ 'scala' 'scala' 'php' 'php' 'sbcl' 'php' 'php' 'ocaml' 'ocaml']
+ 
+ score_quest 5 0.4375
+ pred 5 ['clj' 'clj' 'ocaml' 'clj' 'js' 'hs' 'js' 'scala' 'js' 'js' 'scala'
+ 'racket' 'scala' 'ruby' 'ruby' 'hs' 'racket' 'hs' 'racket' 'racket'
+ 'ocaml' 'c' 'js' 'scala' 'scala' 'pl' 'php' 'php' 'racket' 'php' 'ocaml'
+ 'racket']
+ 
+clj      0    1    2    0    0    23   0    0    0    5    0    1    0    0    0    0    0    0    0    0    0    20   0    0    0    0    1    1    3    0    0    0    0    0    0    0    0    0    0    2    0    0    0    0    0    0    0    0    3    10   9    9    10   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    9    0    0    0    0    1    0    0    1    6    0    0    0    0    
+py       3    0    19   0    6    97   0    0    0    6    9    44   0    0    0    75   366  11   0    66   14   217  0    0    0    0    198  0    13   0    0    0    0    0    0    1    0    0    3    0    0    0    0    0    0    0    0    2    0    91   0    0    41   22   0    0    0    0    26   2    0    0    0    0    0    31   0    29   2    0    10   2    0    7    5    0    6    0    0    0    0    0    5    
+js       0    2    244  3    9    100  0    11   0    45   29   3    0    0    5    1    297  27   7    55   18   87   3    0    0    0    6    0    0    0    0    0    0    1    0    39   0    1    0    0    15   0    0    1    0    0    0    1    1    20   0    0    114  1    27   0    0    0    66   0    0    0    0    0    0    2    0    0    0    0    0    0    1    61   18   0    9    1    15   0    0    11   1    
+ruby     0    0    5    0    10   7    0    0    3    0    5    0    0    0    0    0    44   7    3    0    1    33   0    0    0    0    0    0    1    0    0    0    0    0    0    0    0    0    0    0    0    0    7    19   0    1    0    1    0    20   0    0    5    9    0    0    0    0    1    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    0    0    0    0    1    
+haskell  0    92   33   63   28   24   0    0    0    6    11   0    0    0    0    0    92   2    0    5    0    81   6    0    0    0    1    1    5    0    0    0    0    0    13   0    0    0    0    0    0    0    0    16   0    0    0    0    3    6    0    0    179  1    0    0    0    0    14   0    0    0    0    0    0    1    0    0    0    0    76   0    0    0    0    0    0    145  1    0    0    5    0    
+racket   0    1    0    7    20   48   0    0    0    7    0    0    0    0    0    15   22   0    0    3    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    14   11   70   0    0    5    0    0    0    0    0    0    0    0    0    0    0    0    6    0    0    0    0    0    0    0    5    0    0    0    0    32   65   5    19   0    
+java     0    0    6    0    3    1    0    0    0    16   136  0    0    0    18   0    0    0    0    2    0    1    0    0    0    32   0    0    10   0    0    0    0    0    0    2    0    0    0    0    0    0    0    37   0    0    0    0    3    5    0    0    2    0    0    11   0    0    7    0    6    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    11   1    0    0    0    3    
+scala    0    3    33   32   0    28   0    0    0    0    6    0    0    0    1    0    71   0    0    0    0    57   0    0    0    2    0    0    0    0    0    0    0    0    0    3    0    0    0    0    0    1    23   2    0    0    0    0    0    16   0    0    2    31   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    15   37   9    2    9    13   0    0    0    0    1    
+tcl      0    0    48   92   13   41   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    31   0    0    0    0    0    10   0    0    0    6    0    0    0    2    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    6    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    0    2    0    
+php      0    93   53   185  1    14   0    0    0    74   999  7    0    0    33   5    27   3    2    28   0    18   0    0    0    0    0    0    5    0    0    0    0    0    1    2    0    0    0    0    0    0    0    36   0    0    0    0    0    0    0    0    6    5    0    23   0    0    35   0    0    0    0    0    0    0    3    0    0    0    0    0    0    20   0    0    1    0    18   0    0    0    0    
+ocaml    0    83   19   0    2    11   0    0    0    13   76   0    0    0    0    0    75   0    0    3    2    35   0    0    0    0    1    0    11   0    0    0    0    0    0    0    0    0    0    0    0    0    0    1    0    0    0    1    57   3    0    0    0    0    0    0    0    0    9    0    0    0    0    0    0    0    0    0    0    0    0    0    0    10   22   0    0    20   9    0    0    0    2    

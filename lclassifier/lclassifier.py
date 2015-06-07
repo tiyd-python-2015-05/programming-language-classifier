@@ -176,6 +176,99 @@ def print_matrix(matrix, p_max=None):
         print("")
         #print([str(round(val, 3)) for val in vector])
 
+def ben_transform(X):
+    elements = ['\bbegin\b', '\bend\b', '\bdo\b', '\bvar\b', '\bdefine\b', '\bdefn\b', '\bfunction\b',
+                '\bclass\b', '\bmy\b', '\brequire\b', '\bvoid\b', '\bval\b', '\bpublic\b', '\blet\b',
+                '\bwhere\b', '\busing\b', '\bextend\b', '\bfunction\b']
+
+    elements2 = ['[)]+','[}]+', '[\]]+', '[=]+']
+
+    matrix = []
+    for text in X:
+        results = []
+        for element in elements:
+            results.append(len(re.findall(element, text)))
+
+        for element in elements2:
+            runs = sorted(re.findall(element, text), key=len)
+            if runs:
+                results.append(len(runs[-1]))
+            else:
+                results.append(0)
+        matrix.append(results)
+    return matrix
+
+
+def alan_transform(X):
+    cish = ["^[ \t]*\*", "^[ \t]*/\*\*"]
+    clojure = ["^\s*\(\w.*\s*\)$", "^[ \t]*;", "\(def(n)? "]
+    python = ["\):[ \t]*\n[ \t]*\w", "\s__\w*__\(", "(^from|^import)\s",
+              "def\s*\w*\([ \w,]*\):[ \t]*\n(( {4})+|\t+)\w"]
+    js = ["^[ \t]*var", "=\s*function",
+          "function\s*\w*\(\w*[\w\s,]*\)\s*\{"]
+    ruby = ["^[ \t]*end$", "^[ \t]*def *\w*(\(\w*\))?[ \t]*$",
+            "^[ \t]*include \w*[ \t]*$", "^[ \t]*@", "super"]
+    hs = ["&&&", "^\{-"]
+    clj = ["^\(define", "^[ \t]*;+"]
+    java = ["^[ \t]*public \w* \w*", "^import .*;$"]
+    scl = ["^[ \t]*object \w*", "^[ \t]*(final)?val \w* ="]
+    tcl = ["^[ \t]*proc \w*::\w* \{"]
+    php = ["^[ \t]*(\w*)?( )?function \w*( )?\(&?\$\w*",
+           "^[ \t]*\$\w* ?=.*;$"]
+    ocaml = ["^[ \t]*let \w+", "^[ \t]*struct[ \t]*$"]
+    perl = ["^[ \t]*my ", "^[ \t]*sub \w* \{"]
+    gcc = ["^[ \t]*typedef \w* \w* ?\{", "^#include ?\<",
+           "^using .*;$", "sealed"]
+
+    reg_list = clojure + python + js + ruby + hs + clj + java + scl\
+        + tcl + php + ocaml + perl + gcc + cish
+
+    matrix = []
+    for text in X:
+        v = [0] * len(reg_list)
+        for i in range(len(reg_list)):
+            reg_expr = reg_list[i]
+            prog = re.compile(reg_expr, flags=re.MULTILINE)
+            val = len(prog.findall(text))  # /len(text)
+            # this was found to have best results over normalized forms
+            v[i] = val
+        matrix.append(v)
+    return matrix
+
+
+def old_transform(X):
+    char_list = ["^#", "\-\>", "\{", "\$", "\<", "\[", "func\b",
+                "this\.", "^end", ";", "\*", "%", "^do",
+                "\<\$php", "/\*", "__", "=", "==",
+                "===", "\(\)", "\{\}", ":", "\+\+", "\+=",
+                "^#include", "^ \*", ":\s*$", "\<\<|\>\>",
+                "int", "\b\*\w", "\(&\w", "argv", "\[\]"
+                "if\s", "if\(", "^\{", "^\}", ",\s*int\s\w",
+                "\};", "\[\d*:\d*\]", "\]\s*\{", "^//", "\w\.\{",
+                "\(\w+:", "@", "\b@\w"]
+    word_list = ["private", "static", "make","let", "def", "^\(defn",
+                 "defn", "do", "class", "^function", "public",
+                 "unset", "printf\(", "return", "NULL", "void",
+                 "main\(", "main_", "void\s\*\w", "\{else\}",
+                 "char", "array\(", "__init__", "__str__", "token",
+                 "^import", "^from", "final", "val", "type", "package",
+                 "object", "String", "string", "primitive", "fixnum",
+                 "error", "try"]
+
+    reg_list = char_list + word_list
+
+    matrix = []
+    for text in X:
+        v = [0] * len(reg_list)
+        for i in range(len(reg_list)):
+            reg_expr = reg_list[i]
+            prog = re.compile(reg_expr, flags=re.MULTILINE)
+            val = len(prog.findall(text))  # /len(text)
+            # this was found to have best results over normalized forms
+            v[i] = val
+        matrix.append(v)
+    return matrix
+
 
 class CustomFeaturizer(TransformerMixin):
 
@@ -189,56 +282,13 @@ class CustomFeaturizer(TransformerMixin):
         return self
 
     def transform(self, X):
-        # char_list = ["^#", "\-\>", "\{", "\$", "\<", "\[", "func\b",
-        #             "this\.", "^end", ";", "\*", "%", "^do",
-        #             "\<\$php", "/\*", "__", "=", "==",
-        #             "===", "\(\)", "\{\}", ":", "\+\+", "\+=",
-        #             "^#include", "^ \*", ":\s*$", "\<\<|\>\>",
-        #             "int", "\b\*\w", "\(&\w", "argv", "\[\]"
-        #             "if\s", "if\(", "^\{", "^\}", ",\s*int\s\w",
-        #             "\};", "\[\d*:\d*\]", "\]\s*\{", "^//", "\w\.\{",
-        #             "\(\w+:", "@", "\b@\w"]
-        # word_list = ["private", "static", "make","let", "def", "^\(defn",
-        #              "defn", "do", "class", "^function", "public",
-        #              "unset", "printf\(", "return", "NULL", "void",
-        #              "main\(", "main_", "void\s\*\w", "\{else\}",
-        #              "char", "array\(", "__init__", "__str__", "token",
-        #              "^import", "^from", "final", "val", "type", "package",
-        #              "object", "String", "string", "primitive", "fixnum",
-        #              "error", "try"]
-        cish = ["^[ \t]*\*", "^[ \t]*/\*\*"]
-        clojure = ["^\s*\(\w.*\s*\)$", "^[ \t]*;", "\(def(n)? "]
-        python = ["\):[ \t]*\n[ \t]*\w", "\s__\w*__\(", "(^from|^import)\s",
-                  "def\s*\w*\([ \w,]*\):[ \t]*\n(( {4})+|\t+)\w"]
-        js = ["^[ \t]*var", "=\s*function",
-              "function\s*\w*\(\w*[\w\s,]*\)\s*\{"]
-        ruby = ["^[ \t]*end$", "^[ \t]*def *\w*(\(\w*\))?[ \t]*$",
-                "^[ \t]*include \w*[ \t]*$", "^[ \t]*@", "super"]
-        hs = ["&&&", "^\{-"]
-        clj = ["^\(define", "^[ \t]*;+"]
-        java = ["^[ \t]*public \w* \w*", "^import .*;$"]
-        scl = ["^[ \t]*object \w*", "^[ \t]*(final)?val \w* ="]
-        tcl = ["^[ \t]*proc \w*::\w* \{"]
-        php = ["^[ \t]*(\w*)?( )?function \w*( )?\(&?\$\w*",
-               "^[ \t]*\$\w* ?=.*;$"]
-        ocaml = ["^[ \t]*let \w+", "^[ \t]*struct[ \t]*$"]
-        perl = ["^[ \t]*my ", "^[ \t]*sub \w* \{"]
-        gcc = ["^[ \t]*typedef \w* \w* ?\{", "^#include ?\<",
-               "^using .*;$", "sealed"]
 
-        reg_list = clojure + python + js + ruby + hs + clj + java + scl\
-            + tcl + php + ocaml + perl + gcc + cish
+        #matrix = ben_transform(X)
 
-        matrix = []
-        for text in X:
-            v = [0] * len(reg_list)
-            for i in range(len(reg_list)):
-                reg_expr = reg_list[i]
-                prog = re.compile(reg_expr, flags=re.MULTILINE)
-                val = len(prog.findall(text))  # /len(text)
-                # this was found to have best results over normalized forms
-                v[i] = val
-            matrix.append(v)
+        #matrix = old_transform(X)
+
+        matrix = alan_transform(X)
+
         return matrix
 
 

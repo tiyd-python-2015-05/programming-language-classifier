@@ -1,0 +1,92 @@
+   total samples 931
+ number of usable files 656
+ 
+ number of read file types:  32
+ number of recognized types: 14
+ summary of tile types
+ats             
+clj            38  
+cs             41  
+dart            
+erlang          
+fpascal         
+fsharp          
+c              129  
+hs             33  
+gnat            
+go              
+php            55  
+ifc             
+java           51  
+js             25  
+ruby           73  
+lua             
+ocaml          35  
+oz              
+pl             34  
+py             36  
+racket         29  
+rust            
+sbcl           34  
+scala          43  
+vw              
+cint            
+javasteady      
+parrot          
+cc              
+txt             
+ozf             
+ not included:  
+ 
+ score for    training_set     test_set
+0    0.9818  0.871   
+1    1.0     0.977   
+2    0.9658  0.9355  
+3    0.9795  0.9677  
+4    1.0     0.977   
+ 
+  failed to classify
+
+ failure counts
+  wrongly classified:
+  failed to classify
+ 
+<_csv.reader object at 0x113420a58>
+ number of testing file types: 11
+['clj', 'clj', 'clj', 'clj', 'py', 'py', 'py', 'py', 'js', 'js', 'js', 'js', 'ruby', 'ruby', 'ruby', 'haskell', 'haskell', 'haskell', 'racket', 'racket', 'racket', 'java', 'java', 'scala', 'scala', 'tcl', 'tcl', 'php', 'php', 'php', 'ocaml', 'ocaml']
+ score_quest 1 0.59375
+ pred 1 ['clj' 'clj' 'clj' 'clj' 'py' 'clj' 'ruby' 'py' 'js' 'js' 'clj' 'php'
+ 'ruby' 'clj' 'ruby' 'hs' 'hs' 'clj' 'racket' 'racket' 'racket' 'java'
+ 'clj' 'scala' 'scala' 'racket' 'py' 'c' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_quest 2 0.65625
+ pred 2 ['clj' 'clj' 'ruby' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'ruby' 'hs' 'racket' 'racket' 'sbcl' 'java' 'java'
+ 'scala' 'scala' 'ruby' 'ruby' 'java' 'java' 'java' 'ocaml' 'ruby']
+ 
+ score_quest 3 0.6875
+ pred 3 ['clj' 'clj' 'sbcl' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'racket' 'hs' 'racket' 'racket' 'racket' 'pl' 'pl'
+ 'scala' 'scala' 'racket' 'racket' 'pl' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_quest 4 0.71875
+ pred 4 ['clj' 'clj' 'sbcl' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'hs' 'hs' 'racket' 'racket' 'racket' 'java' 'c' 'scala'
+ 'scala' 'py' 'py' 'java' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_quest 5 0.625
+ pred 5 ['ruby' 'ruby' 'ruby' 'clj' 'py' 'py' 'py' 'py' 'js' 'js' 'js' 'js' 'ruby'
+ 'ruby' 'ruby' 'hs' 'ruby' 'hs' 'racket' 'ruby' 'ruby' 'java' 'java'
+ 'scala' 'scala' 'ruby' 'ruby' 'java' 'php' 'php' 'ocaml' 'ruby']
+ 
+clj      79   31   63   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    31   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+py       0    0    0    587  142  79   476  0    0    0    0    0    0    0    63   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+js       7    15   0    0    0    0    0    333  158  682  0    0    0    0    0    0    0    0    15   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    15   0    
+ruby     0    0    0    0    0    0    0    0    0    0    158  87   23   55   31   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+haskell  0    0    0    0    0    468  0    0    0    0    0    0    0    0    0    7    79   0    0    0    0    0    0    0    0    0    7    0    0    0    0    0    0    0    0    0    
+racket   1000 39   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    412  39   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    
+java     0    0    0    0    0    0    0    0    0    0    0    0    0    0    7    0    0    0    0    63   0    0    0    0    0    0    0    0    0    0    0    0    0    0    619  103  
+scala    7    0    0    0    0    7    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    39   55   0    0    0    0    0    0    0    0    0    0    15   15   0    
+tcl      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    15   0    0    0    0    0    0    0    0    0    0    0    0    
+php      0    0    0    0    0    0    0    0    0    63   0    0    0    0    0    0    0    0    0    134  0    0    0    0    87   39   0    0    0    0    0    0    0    0    730  206  
+ocaml    47   0    0    0    0    0    0    0    31   0    15   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    277  7    0    0    0    0    0    0    7    0    

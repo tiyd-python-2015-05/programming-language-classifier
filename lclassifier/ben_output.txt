@@ -1,0 +1,319 @@
+   total samples 931
+ number of usable files 656
+ 
+ number of read file types:  32
+ number of recognized types: 14
+ summary of tile types
+ats             
+clj            38  
+cs             41  
+dart            
+erlang          
+fpascal         
+fsharp          
+c              129  
+hs             33  
+gnat            
+go              
+php            55  
+ifc             
+java           51  
+js             25  
+ruby           73  
+lua             
+ocaml          35  
+oz              
+pl             34  
+py             36  
+racket         29  
+rust            
+sbcl           34  
+scala          43  
+vw              
+cint            
+javasteady      
+parrot          
+cc              
+txt             
+ozf             
+ not included:  
+ 
+ score for    training_set     test_set
+0    0.9932  0.8387  
+1    0.5399  0.3733  
+2    0.2346  0.235   
+3    0.2916  0.2765  
+4    0.533   0.3779  
+ 
+  failed to classify
+js     misclassified as c
+ocaml  misclassified as c
+java   misclassified as ruby
+cs     misclassified as c
+java   misclassified as ruby
+java   misclassified as c
+scala  misclassified as c
+php    misclassified as c
+scala  misclassified as c
+java   misclassified as c
+c      misclassified as ruby
+ruby   misclassified as c
+cs     misclassified as c
+c      misclassified as ruby
+cs     misclassified as c
+js     misclassified as c
+hs     misclassified as py
+scala  misclassified as c
+java   misclassified as c
+php    misclassified as c
+java   misclassified as c
+php    misclassified as ruby
+js     misclassified as c
+java   misclassified as ocaml
+hs     misclassified as clj
+pl     misclassified as c
+php    misclassified as c
+hs     misclassified as py
+pl     misclassified as ruby
+scala  misclassified as c
+php    misclassified as c
+ocaml  misclassified as c
+ocaml  misclassified as c
+java   misclassified as c
+ruby   misclassified as pl
+cs     misclassified as c
+ruby   misclassified as pl
+py     misclassified as c
+scala  misclassified as c
+scala  misclassified as hs
+js     misclassified as c
+java   misclassified as c
+cs     misclassified as c
+php    misclassified as c
+php    misclassified as ruby
+java   misclassified as c
+php    misclassified as pl
+php    misclassified as c
+hs     misclassified as ocaml
+pl     misclassified as ruby
+java   misclassified as c
+cs     misclassified as ruby
+php    misclassified as pl
+cs     misclassified as c
+c      misclassified as ruby
+java   misclassified as c
+py     misclassified as ruby
+hs     misclassified as c
+scala  misclassified as c
+c      misclassified as pl
+cs     misclassified as c
+c      misclassified as ruby
+cs     misclassified as c
+py     misclassified as c
+php    misclassified as ruby
+ruby   misclassified as hs
+pl     misclassified as ruby
+cs     misclassified as c
+scala  misclassified as c
+java   misclassified as c
+php    misclassified as c
+java   misclassified as c
+hs     misclassified as c
+ruby   misclassified as pl
+java   misclassified as ruby
+ocaml  misclassified as c
+hs     misclassified as ruby
+java   misclassified as pl
+hs     misclassified as c
+js     misclassified as php
+clj    misclassified as racket
+clj    misclassified as racket
+ruby   misclassified as c
+hs     misclassified as c
+ocaml  misclassified as c
+scala  misclassified as c
+cs     misclassified as c
+php    misclassified as c
+java   misclassified as ruby
+ocaml  misclassified as py
+clj    misclassified as racket
+php    misclassified as c
+java   misclassified as c
+ruby   misclassified as pl
+java   misclassified as c
+scala  misclassified as c
+php    misclassified as c
+py     misclassified as scala
+php    misclassified as pl
+py     misclassified as scala
+pl     misclassified as ruby
+js     misclassified as ruby
+php    misclassified as ruby
+hs     misclassified as c
+java   misclassified as c
+scala  misclassified as c
+c      misclassified as scala
+java   misclassified as c
+java   misclassified as c
+java   misclassified as c
+java   misclassified as c
+hs     misclassified as py
+ruby   misclassified as c
+php    misclassified as ruby
+hs     misclassified as py
+java   misclassified as c
+ruby   misclassified as pl
+c      misclassified as pl
+py     misclassified as ruby
+py     misclassified as ruby
+php    misclassified as ruby
+pl     misclassified as c
+java   misclassified as c
+cs     misclassified as c
+pl     misclassified as ruby
+js     misclassified as c
+java   misclassified as c
+pl     misclassified as c
+c      misclassified as scala
+js     misclassified as c
+clj    misclassified as racket
+hs     misclassified as scala
+pl     misclassified as c
+ruby   misclassified as c
+php    misclassified as c
+java   misclassified as c
+cs     misclassified as c
+php    misclassified as ruby
+ocaml  misclassified as ruby
+php    misclassified as c
+cs     misclassified as c
+pl     misclassified as c
+py     misclassified as c
+java   misclassified as c
+java   misclassified as c
+pl     misclassified as c
+php    misclassified as c
+pl     misclassified as ruby
+scala  misclassified as c
+ruby   misclassified as c
+clj    misclassified as racket
+php    misclassified as c
+java   misclassified as c
+ocaml  misclassified as py
+java   misclassified as c
+clj    misclassified as racket
+php    misclassified as ruby
+cs     misclassified as c
+ocaml  misclassified as scala
+ruby   misclassified as pl
+clj    misclassified as racket
+pl     misclassified as ruby
+ocaml  misclassified as c
+pl     misclassified as c
+cs     misclassified as c
+scala  misclassified as c
+hs     misclassified as c
+scala  misclassified as c
+js     misclassified as php
+hs     misclassified as c
+php    misclassified as ruby
+java   misclassified as c
+ruby   misclassified as pl
+scala  misclassified as c
+hs     misclassified as c
+cs     misclassified as c
+pl     misclassified as c
+js     misclassified as c
+cs     misclassified as scala
+pl     misclassified as c
+cs     misclassified as c
+ocaml  misclassified as c
+cs     misclassified as c
+c      misclassified as ruby
+ruby   misclassified as c
+c      misclassified as ruby
+js     misclassified as ruby
+php    misclassified as ruby
+pl     misclassified as c
+hs     misclassified as c
+pl     misclassified as ruby
+java   misclassified as c
+hs     misclassified as py
+scala  misclassified as c
+cs     misclassified as c
+c      misclassified as ruby
+java   misclassified as c
+js     misclassified as ruby
+ruby   misclassified as py
+php    misclassified as c
+java   misclassified as ruby
+java   misclassified as c
+php    misclassified as c
+py     misclassified as ocaml
+cs     misclassified as c
+
+ failure counts
+  wrongly classified:
+c      ###########################################################################################################################
+ruby   #######################################
+racket #######
+py     ########
+hs     ##
+clj    #
+ocaml  ###
+php    ##
+pl     #############
+scala  #######
+  failed to classify
+ruby   ###############
+cs     ######################
+scala  ################
+ocaml  ###########
+pl     ##################
+clj    #######
+c      ###########
+js     ############
+php    #############################
+hs     ##################
+py     #########
+java   #####################################
+ 
+<_csv.reader object at 0x10a1a2c18>
+ number of testing file types: 11
+['clj', 'clj', 'clj', 'clj', 'py', 'py', 'py', 'py', 'js', 'js', 'js', 'js', 'ruby', 'ruby', 'ruby', 'haskell', 'haskell', 'haskell', 'racket', 'racket', 'racket', 'java', 'java', 'scala', 'scala', 'tcl', 'tcl', 'php', 'php', 'php', 'ocaml', 'ocaml']
+ score_quest 1 0.59375
+ pred 1 ['clj' 'clj' 'clj' 'clj' 'py' 'clj' 'ruby' 'py' 'js' 'js' 'clj' 'php'
+ 'ruby' 'clj' 'ruby' 'hs' 'hs' 'clj' 'racket' 'racket' 'racket' 'java'
+ 'clj' 'scala' 'scala' 'racket' 'py' 'c' 'php' 'js' 'ocaml' 'ocaml']
+ 
+ score_quest 2 0.125
+ pred 2 ['java' 'racket' 'racket' 'clj' 'c' 'c' 'ocaml' 'c' 'ocaml' 'ocaml' 'php'
+ 'ruby' 'php' 'pl' 'ruby' 'c' 'ruby' 'ruby' 'sbcl' 'ocaml' 'racket' 'c' 'c'
+ 'c' 'ruby' 'c' 'c' 'php' 'hs' 'ocaml' 'c' 'py']
+ 
+ score_quest 3 0.125
+ pred 3 ['scala' 'ocaml' 'ocaml' 'scala' 'ruby' 'ruby' 'ocaml' 'ruby' 'cs' 'cs'
+ 'cs' 'ruby' 'ruby' 'ruby' 'ruby' 'ruby' 'ruby' 'ruby' 'scala' 'ocaml'
+ 'scala' 'ocaml' 'ruby' 'ruby' 'ruby' 'scala' 'ruby' 'ruby' 'cs' 'cs'
+ 'ruby' 'ocaml']
+ 
+ score_quest 4 0.0625
+ pred 4 ['c' 'clj' 'clj' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c'
+ 'c' 'sbcl' 'sbcl' 'clj' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c' 'c']
+ 
+ score_quest 5 0.125
+ pred 5 ['clj' 'racket' 'racket' 'clj' 'c' 'c' 'ocaml' 'c' 'ocaml' 'ocaml' 'php'
+ 'ruby' 'php' 'pl' 'py' 'c' 'ruby' 'ruby' 'sbcl' 'ocaml' 'racket' 'c'
+ 'ruby' 'c' 'ruby' 'clj' 'ruby' 'php' 'hs' 'ocaml' 'c' 'py']
+ 
+clj      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    571  142  142  0    
+py       0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  285  
+js       0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    428  285  142  428  
+ruby     0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    142  142  142  571  
+haskell  0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  285  
+racket   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1000 0    142  142  
+java     0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    142  142  142  0    
+scala    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  142  
+tcl      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  0    
+php      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  428  
+ocaml    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    285  142  142  142  

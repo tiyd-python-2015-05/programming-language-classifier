@@ -14,6 +14,8 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.tree import DecisionTreeClassifier
+
 
 class Learner(object):
     algorithms = {'m':MultinomialNB(),
@@ -22,7 +24,8 @@ class Learner(object):
                   'f':RandomForestClassifier(),
                   'k':KNeighborsClassifier(),
                   'n':KNeighborsClassifier(),
-                  'p':MultinomialNB()
+                  'p':MultinomialNB(),
+                  'd':DecisionTreeClassifier()
                   }
         
     '''Takes a dataframe with outcomes on first column and predictor second column
@@ -30,7 +33,7 @@ class Learner(object):
     '''
     def __init__(self, dataframe, alg='NBayes'):
         self.outcome, self.predictor = self.split_data(dataframe)
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.predictor, self.outcome)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.predictor, self.outcome, test_size=0.33)
         self.pipe = Pipeline([('bag_of_words', CountVectorizer()), ('bayes', self.get_algorithm(alg))])
         self.fit()
 

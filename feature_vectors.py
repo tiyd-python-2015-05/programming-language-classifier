@@ -16,6 +16,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
+
 def longest_run_of_capital_letters_feature(text):
     """Find the longest run of characters and return their length."""
     runs = sorted(re.findall(r"[A-Z]+", text), key=len)
@@ -39,14 +40,14 @@ def longest_run_of_character_feature(text):
 
 
 def percent_character_feature(text):
-    """Return percentage of text that is a particular char compared to total text length. Must give a list of characters"""
+    """Return percentage of text that is a particular char compared to total text length."""
     chars = [".", "|", "$", "_", "!", "#", "@", "%", "^", "&", "*", "(", ")",
              "+", "=", "{", "}", "[", "]", ":", ";", "?", "<", ">"]
     return [text.count(i)/len(text) for i in chars]
 
 
 def percent_character_combinations(text):
-    """Return percentage of text that is a particular char compared to total text length. Must give a list of characters"""
+    """Return percentage of text that is a particular char compared to total text length."""
     chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|",
              "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#"
          "^def", "^@w+", "^@end", "^begin", "^end", "^functions", "^loop\n", "^procedure", "^func",
@@ -60,8 +61,9 @@ def percent_character_combinations(text):
             runs.append(0)
     return runs
 
+
 def binary_character_combinations(text):
-    """Return binary of text that is a particular char compared to total text length. Must give a list of characters"""
+    """Return binary of text that is a particular char compared to total text length."""
     chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|",
              "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#"
          "^def", "^@w+", "^@end", "^begin", "^end", "^functions", "^loop\n", "^procedure", "^func",
@@ -87,6 +89,7 @@ def make_pipe(estimator):
 
     return make_pipeline(language_featurizer, estimator)
 
+
 class FunctionFeaturizer(TransformerMixin):
     def __init__(self, *featurizers):
         self.featurizers = featurizers
@@ -103,5 +106,4 @@ class FunctionFeaturizer(TransformerMixin):
             fv = [f(datum) for f in self.featurizers]
             a = list(itertools.chain(*fv))
             fvs.append(a)
-        # b = list(itertools.chain(*fvs))
         return fvs

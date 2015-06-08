@@ -13,12 +13,9 @@ from sklearn.metrics import classification_report
 from sklearn.cross_validation import cross_val_score
 import pickle
 
-# language_start = ["C", "C#", "Common Lisp", "Clojure", "Haskell",
-#                   "Java", "JavaScript", "OCaml", "Perl", "PHP",
-#                   "Python", "Ruby", "Scala", "Scheme"]
-#
 
 def scrape_data(url):
+    """Must provide url. Returns a list of soup objects"""
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     content = urllib.request.urlopen(req).read()
     soup = BeautifulSoup(content)
@@ -28,10 +25,12 @@ def scrape_data(url):
 
 
 def pull_code_from_soup(soup_list):
+    """Takes list of soup objects and returns list of code as string."""
     return [[soup_list[i]['class'][0], soup_list[i].get_text()] for i in range(len(soup_list))]
 
 
 def make_data(url_list):
+    """Makes dataframe with code examples"""
     code_snippets = pd.DataFrame(columns=([0, 1]))
     for url in url_list:
         soup_list = scrape_data(url)
@@ -40,6 +39,7 @@ def make_data(url_list):
 
 
 def scrape_links():
+   """There are over 700 example tasks on Rosetta Code. Returns a list of the web addresses for all tasks."""
    req = urllib.request.Request('http://rosettacode.org/wiki/Category:Programming_Tasks', headers={'User-Agent': 'Mozilla/5.0'})
    content = urllib.request.urlopen(req).read()
    soup = BeautifulSoup(content)
@@ -48,6 +48,7 @@ def scrape_links():
 
 
 def make_links_list(num_links=30):
+    """Randomly selects which examples tasks to include."""
     return random.sample(scrape_links(), num_links)
 
 
@@ -57,6 +58,9 @@ def scrape_and_clean(num_links=30):
     return new_df
 
 def scrape_clean_cut(num_links=100, min_examples=40, save=False):
+    """Scrapes the data using previous functions,
+    cleans the data by removing all the text files that are not code, and
+    cuts the data to only the number of links desired. Returns a dataframe."""
     df = make_data(make_links_list(num_links))
     new_df = df[df[0]!='text']
     new_df = new_df.groupby(0).filter(lambda x: len(x) >= min_examples)
@@ -66,6 +70,10 @@ def scrape_clean_cut(num_links=100, min_examples=40, save=False):
 
 
 def scrape_clean_cut_filter(num_links=100, min_examples=40, save=False):
+    """Scrapes the data using previous functions,
+    cleans the data by removing all the text files that are not code,
+    cuts the data to only the number of links desired,
+    and filters to only the languages in the test file. Returns a dataframe."""
     df = make_data(make_links_list(num_links))
     df = df[df[0]!='text']
     new_df = df[(df[0] == 'clojure') | (df[0] == 'haskell') | (df[0] == 'java') | (df[0] == 'javascript')
@@ -78,8 +86,11 @@ def scrape_clean_cut_filter(num_links=100, min_examples=40, save=False):
     return new_df
 
 def pipeline_runner(dataframe, estimator='Multinomial', report=False):
-    """Should have made this a class not a function"""
-    ##Re-testing with MultinomialNB
+    """Runs train_test_split and pipline function and returns pipe.score.
+     Must provide the dataframe, and estimator.
+     If report=True the classification report will print instead of the pipe.score."""
+
+    #Re-testing with MultinomialNB
     y = dataframe.loc[:, 0]
     X = dataframe.loc[:, 1]
     #splitting data

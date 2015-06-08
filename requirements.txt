@@ -5,3 +5,5 @@ numpy
 matplotlib
 pytest
 ipython[notebook]
+beautifulsoup4
+requests

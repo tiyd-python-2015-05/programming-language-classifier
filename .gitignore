@@ -65,3 +65,13 @@ docs/_build/
 # PyBuilder
 target/
 
+.direnv/
+.envrc
+.idea/
+.DS_Store
+scraper_500x100.pkl
+scraper_50x10.pkl
+scraper_50x1_17.pkl
+scraper_700x1_17.pkl
+test_X_values.pkl
+test_y_values.pkl

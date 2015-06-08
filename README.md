@@ -12,6 +12,7 @@ performed to a score .97!  These results are presented in PresentationPart5.ipyn
 This peformance was augmented with specialized featurizers as found in feature_vectorizer.py.  
 Web scraping functions are in web_scraper.py.
 
+Most data is presented in PresentationPart1 through 5.  Other notebooks document process.
 
 
 The python code for the project is

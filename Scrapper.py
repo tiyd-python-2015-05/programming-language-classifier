@@ -52,5 +52,31 @@ def scrape(num_links=30, drop_less_than=0, save=False):
     ndf = df[df[0] != 'text']
     ndf = ndf.groupby(0).filter( lambda x: len(x) >= drop_less_than)
     if save:
-        ndf.to_pickle('filename_.pkl')
+        ndf.to_pickle('data/{}.pkl'.format(num_links))
     return ndf
+
+
+def scrape_filter(num_links=30, drop_less_than=0, save=False):
+    df = make_data(make_links_list(num_links))
+    df = df[df[0] != 'text']
+    df = df[(df[0] == 'ada') | (df[0] == 'clojure') | (df[0] == "algol68") | (df[0] == "awk")
+            | (df[0] == "bash") | (df[0] == "haskell") | (df[0] == "java") | (df[0] == "javascript") | (df[0] == "lisp") | (df[0] == "objc") | (df[0] == "ocaml") | (df[0] == "php") | (df[0] == "python") | (df[0] == "ruby") | (df[0] == "scala") | (df[0] == "scheme") | (df[0] == "tcl")]
+    df = df.groupby(0).filter(lambda x: len(x) >= drop_less_than)
+    if save:
+        name = "data/filtered_{}_of_{}.pkl".format(drop_less_than, num_links)
+        df.to_pickle(name)
+    return df
+
+
+def scraper_filter_small(num_links=30, drop_less_than=0, save=False):
+    df = make_data(make_links_list(num_links))
+    df = df[df[0] != 'text']
+    df = df[(df[0] == 'clojure') | (df[0] == "haskell") | (df[0] == "java") | (df[0] == "javascript") | (df[0] == "ocaml") | (df[0] == "php") | (df[0] == "python") | (df[0] == "ruby") | (df[0] == "scala") | (df[0] == "scheme") | (df[0] == "tcl")]
+    df  = df.groupby(0).filter(lambda x: len(x) >= drop_less_than)
+    if save:
+        name = "data/smaller_{}_of_{}.pkl".format(drop_less_than, num_links)
+        df.to_pickle(name)
+    return df
+    
+def load_data(file_name):
+    return pd.read_pickle('data/{}.pkl'.format(file_name))

@@ -4,21 +4,17 @@ import re
 import itertools
 
 
-def longest_run_of_capitol_letters_feature(text):
-    """Find the longest run of capitol letters and return their length."""
+def longest_run_of_capital_letters_feature(text):
+    """Find the longest run of capital letters and return their length."""
     runs = sorted(re.findall(r"[A-Z]+", text), key=len)
     if runs:
         return [len(runs[-1])]
     else:
-        return 0
-                                
-def percent_character_feature(char_list):
-    def feature_fn(text):
-        return [text.count(i)/len(text) for i in char_list]
-    return feature_fn
+        return [0]
 
+    
 def longest_run_of_character_feature(text):
-    chars = ['~+', '\.+', '\|+', ';+', '\:+', '\$+', '\(+', '\)+', '\-+']
+    chars = ['~+', '\.+', '\|+', ';+', '\:+', ';+', '\$+', '\(+', '\)+', '\-+', '\s+', '\t+']
     runs = []
     for i in chars:
         run = sorted(re.findall(r'{}'.format(i), text), key=len)
@@ -27,6 +23,39 @@ def longest_run_of_character_feature(text):
     else:
         runs.append(0)
     return runs
+
+
+def percent_character_feature(text):
+    """Return percentage of text that is a particular char compared to total text length."""
+    chars = [".", "|", "$", "_", "!", "#", "@", "%", "^", "&", "*", "(", ")","+", "=", "{", "}", "[", "]", ":", ";", "?", "<", ">"]
+
+    return [text.count(i)/len(text) for i in chars]
+
+
+def percent_character_combinations(text):
+    """Return percentage of text that is a particular char compared to total text length."""
+    chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|", "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#", "^def", "^@w+", "^@end", "^begin", "^end", "^functions", "^loop\n", "^procedure", "^func","\+\+"]
+    runs = []
+    for i in chars:
+        run = re.findall(r'{}'.format(i), text)
+        if run:
+            runs.append(len(run)/len(text))
+        else:
+            runs.append(0)
+    return runs
+
+def binary_character_combinations(text):
+    '''Return binary of text that is particular char to total length of text'''
+    chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|","\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#", "^def", "^@w+", "^@end", "^begin", "^end", "^functions", "^loop\n", "^procedure", "^func","\+\+"]
+    runs = []
+    for i in chars:
+        run = re.findall(r'{}'.format(i), text)
+        if run:
+            runs.append(1)
+        else:
+            runs.append(0)
+    return runs
+
 
 class FunctionFeaturizer(TransformerMixin):
     def __init__(self, *featurizers):

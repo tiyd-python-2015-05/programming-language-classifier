@@ -1,3 +1,6 @@
+ipython[notebook]
+textblob
+beautifulsoup4
 scikit-learn
 scipy
 pandas

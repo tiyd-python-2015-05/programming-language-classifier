@@ -1,3 +1,21 @@
+Welcome to the Code Classifier Project.
+
+Code Classifier scrapes Rosettacode.com for examples of code from any language, then trains and tests
+depending on settings.  With a large data set, where each language has over 100 examples, the Code
+Classifier achieves above .79 score with RandomForest Classification classifying over 40 languages in
+ the test data set.  (This is seen in PresentationPart2.ipynb).
+
+To achieve even greater results on the small test sample provided with the project (containing only 11
+languages), data was scraped only for those languages.  After training, the RandomForest Classifier
+performed to a score .97!  These results are presented in PresentationPart5.ipynb.
+
+This peformance was augmented with specialized featurizers as found in feature_vectorizer.py.  
+Web scraping functions are in web_scraper.py.
+
+
+
+The python code for the project is
+
 # Classify code snippets into programming languages
 
 ## Description

@@ -25,8 +25,8 @@ def scrape_data(url):
     content = urllib.request.urlopen(req).read()
     soup = BeautifulSoup(content)
     return soup.find_all( "pre", class_="highlighted_source")
-    #pre is an html tag. We want all text from pre with class highlighted_source
-    #returns a list of soup objects
+    # "pre" is an html tag. We want all text from pre with class highlighted_source
+    # Returns a list of soup objects
 
 
 def pull_code_from_soup(soup_list):
@@ -97,9 +97,6 @@ def scraper_filter_small(num_links=50, min_examples=1, save=False):
     return df
 
 
-
-
-
 # Should we make this a class?
 def split_fit_score(dataframe, estimator="Bayes", report=False):
     df_X = dataframe.loc[:, 1]
@@ -114,6 +111,10 @@ def split_fit_score(dataframe, estimator="Bayes", report=False):
     elif estimator == "neighbors":
         new_pipe = Pipeline([("bag_of_words", CountVectorizer(binary=True)),
                    ("neighbors", KNeighborsClassifier())])
+    else:
+        print("Did not recognize estimator.  Used Bayes.")
+        new_pipe = Pipeline([("bag_of_words", CountVectorizer()),
+                   ("nb", MultinomialNB())])
     new_pipe.fit(X_train, y_train)
     if report:
         return (classification_report(new_pipe.predict(X_test), y_test))

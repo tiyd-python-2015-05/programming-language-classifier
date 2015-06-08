@@ -30,28 +30,6 @@ def percent_character_feature(text):
     return [text.count(i)/len(text) for i in char_list]
 
 
-
-# def longest_run_of_tabs_feature(text):
-#     """Find the longest run of capitol letters and return their length."""
-#     runs = sorted(re.findall(r"\t+", text), key=len)
-#     if runs:
-#         return [len(runs[-1])]
-#     else:
-#         return [0]
-#
-#
-# def longest_run_of_spaces_feature(text):
-#     """Find the longest run of capitol letters and return their length."""
-#     runs = sorted(re.findall(r" +", text), key=len)
-#     if runs:
-#         return [len(runs[-1])]
-#     else:
-#         return [0]
-
-
-
-
-
 def percent_character_combinations(text):
    """Return percentage of text that is a particular char compared to total text length. Must give a list of characters"""
    chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|",

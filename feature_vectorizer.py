@@ -31,7 +31,8 @@ def percent_character_feature(text):
 
 
 def percent_character_combinations(text):
-   """Return percentage of text that is a particular char compared to total text length. Must give a list of characters"""
+   """Return percentage of text that is a particular char compared to total text length. Must give a list
+   of characters"""
    chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|",
          "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#",
          "^def", "^@\w+", "^@end", "^begin", "^end", "^function", "loop\n", "^procedure" , "^func ",
@@ -49,9 +50,9 @@ def percent_character_combinations(text):
 def character_combinations_binary(text):
     """Returns 1 if character combination is present, 0 if not."""
     chars = ["==", "\->+", ":\-+", "\+=", "\n\t+if", "\n+", "\n\$+", "\n\t+", "\ndef", "%{", "~=", "\|\|",
-         "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#",
-         "^def", "^@\w+", "^@end", "^begin", "^end", "^function", "loop\n", "^procedure" , "^func ",
-         "\+\+"]
+             "\n\t+\(\w+", "^\$", "\.=", "\{:", "===", "!==", "\*\w+", "__", "__name__", "__main__", "^\#",
+             "^def", "^@\w+", "^@end", "^begin", "^end", "^function", "loop\n", "^procedure" , "^func ",
+             "\+\+"]
     runs = []
     for i in chars:
        run = re.findall(r"{}".format(i), text)
@@ -102,3 +103,13 @@ def make_pipe(classifier):
                                                     character_combinations_binary
                                                     ))
     return make_pipeline(language_featurizer, classifier)
+
+
+def score_pipe(pipe, X_train, X_test, y_train, y_test):
+    pipe.fit(X_train, y_train)
+    score = pipe.score(X_test, y_test)
+    print(classification_report(pipe.predict(X_test), y_test))
+    print(classification_report(pipe.predict(X_test), y_test))
+    print("Score is {}.".format(score))
+    return score
+

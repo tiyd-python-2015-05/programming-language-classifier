@@ -3,3 +3,6 @@ scipy
 pandas
 numpy
 matplotlib
+beautifulsoup4
+requests
+ipython[notebook]

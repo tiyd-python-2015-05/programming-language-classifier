@@ -1,3 +1,36 @@
+## Programming Language Classifier
+
+Given a code snippet, the classifier will try to predict what language it is.
+
+## Steps taken to develop the classifier
+### Scrapper
+1. Created a scrapper that would collect different code snippets from the web, specifically from [Rosetta Code] (www.rosettacode.org/wiki/Rosetta_Code)
+2. The scrapper collects these code snippets by different tasks for each of the programing languages.
+3. For the scrapper to work, give it a minimum number of links to scrape and if you want to limit the languages retrieved by frequency, you can give it the minimum number of observations for the language to be in the classifier. Decide if you want to save the data frame or not
+
+`from Scrapper import scrape`
+
+`scrape(num_links, drop_less_than, save=(True,False))`
+
+You can decide to also load that dataframe into a variable so you can use it in the next steps or you can load the `.pkl` file using the number of links as the file name.
+
+### Classifier
+To use the classifier, import the Learner class and use the Learner class to define a classifier object
+
+`from Learner import Learner`
+
+`from Scrapper import load_data`
+
+`dataframe = load_data(500)`
+
+`classifier = Learner(dataframe, alg)`
+
+`alg` can be any of MultinomialNB, RandomForestClassifier, KNeighborsClassifier, or Bernoulli
+
+Learner splits (`test_size .33`) and fits the data and makes availabe the methods `test_score()`, `train_score()`, `predict(string)`  and `classification_report()` which you can call on the learner object directly.
+
+### VectorFeaturizer
+
 # Classify code snippets into programming languages
 
 ## Description

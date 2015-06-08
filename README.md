@@ -5,6 +5,11 @@ depending on settings.  With a large data set, where each language has over 100 
 Classifier achieves above .79 score with RandomForest Classification classifying over 40 languages in
  the test data set.  (This is seen in PresentationPart2.ipynb).
 
+
+Achieved a score of .81 using the RandomForest Classifier after training on over 40 languages and
+running on test.csv.
+
+
 To achieve even greater results on the small test sample provided with the project (containing only 11
 languages), data was scraped only for those languages.  After training, the RandomForest Classifier
 performed to a score .97!  These results are presented in PresentationPart5.ipynb.

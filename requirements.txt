@@ -5,4 +5,4 @@ numpy
 matplotlib
 beautifulsoup4
 requests
-ipython[noteboook]
+ipython[notebook]

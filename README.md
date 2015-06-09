@@ -30,6 +30,10 @@ To use the classifier, import the Learner class and use the Learner class to def
 Learner splits (`test_size .33`) and fits the data and makes availabe the methods `test_score()`, `train_score()`, `predict(string)`  and `classification_report()` which you can call on the learner object directly.
 
 ### VectorFeaturizer
+The vector featurizer creates more specific feature vectors to use to increase accuracy of the classifier. It mainly adds specific character classes that distinguish different languages more explicitly because most of other general features are common among languages.
+
+### Passing the tests
+Need to import the test files and test those against the data scrapped from RosettaCode
 
 # Classify code snippets into programming languages
 

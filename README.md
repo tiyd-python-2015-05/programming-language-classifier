@@ -1,16 +1,3 @@
-Clinton,
-
-Hello, hope you had a good weekend. So, I worked with Josh and Tripp and Sovello for this assignment. 
-Overall, I learned more this way than I have in the past, working on my own. I didn't ask quite enough
-questions as there are a few things I don't fully understand/still need some practice on. I also made
-the mistake of not working on my own computer; I was more or less working from and with them on their
-computers. I know the work I'm producing is not good, but I'm still learning a lot, and overall,
-making progress. I'll probably just pick one person next time instead of getting in a group of 4, that
-way it will be easier to ask questions, and do more work on my own.
-
-
-
-
 # Classify code snippets into programming languages
 
 ## Description
